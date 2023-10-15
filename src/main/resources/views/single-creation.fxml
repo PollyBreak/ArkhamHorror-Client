@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+      prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="kz.stargazer.arkhamhorror_client.view_controllers.SinglePlayerCreationController">
+   <children>
+      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="46.0" prefWidth="292.0" text="Создание игры">
+         <VBox.margin>
+            <Insets top="20.0" />
+         </VBox.margin>
+         <font>
+            <Font size="21.0" />
+         </font>
+      </Label>
+      <HBox alignment="CENTER" prefHeight="19.0" prefWidth="600.0">
+         <children>
+            <Label alignment="CENTER" text="Сюжет">
+               <HBox.margin>
+                  <Insets right="200.0" />
+               </HBox.margin>
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <Label text="Количество сыщиков">
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+         </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+      </HBox>
+      <HBox prefHeight="27.0" prefWidth="600.0">
+         <children>
+            <ChoiceBox prefWidth="150.0">
+               <HBox.margin>
+                  <Insets left="55.0" />
+               </HBox.margin>
+            </ChoiceBox>
+            <ChoiceBox prefWidth="150.0">
+               <HBox.margin>
+                  <Insets left="145.0" />
+               </HBox.margin>
+            </ChoiceBox>
+         </children>
+      </HBox>
+   </children>
+   <opaqueInsets>
+      <Insets />
+   </opaqueInsets>
+</VBox>
