@@ -1,19 +1,25 @@
 package kz.stargazer.arkhamhorror_client.Heroes;
 
+import kz.stargazer.arkhamhorror_client.Assets.Action;
 import kz.stargazer.arkhamhorror_client.Assets.AssetCard;
+import kz.stargazer.arkhamhorror_client.Assets.Assets;
+import kz.stargazer.arkhamhorror_client.Mechanics.Game;
+import kz.stargazer.arkhamhorror_client.brd.Node;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Investigator {
+    private Game game;
+
     private String name;
 
     private int health;
     private int sanity;
-
     private int focusLimit;
+    private int freeHands = 2;
+    private int money;
 
-    private HashMap<String, Integer> skills = new HashMap<>();
 
     private int lore;
     private int influence;
@@ -23,17 +29,46 @@ public class Investigator {
 
     private ArrayList<Integer> successes = new ArrayList<>();
 
-    private ArrayList<AssetCard> assets = new ArrayList<>();
+    private Assets assets;
+    private int clues = 0;
+    private Node space;
+    private int actions = 2;
+    private ArrayList<Integer> doneActions = new ArrayList<>();
 
-    private int actions;
+    private Action talent;
+
 
     private boolean delayed;
     private boolean withMonsters;
     private boolean active;
+    private boolean ready;
 
-    public Investigator(String name, int health, int sanity, int focusLimit, int lore, int influence,
-                        int observation, int strength, int will, ArrayList<AssetCard> assets, int actions,
-                        boolean delayed, boolean withMonsters, boolean active) {
+    public Investigator(InvestigatorBuilder investigatorBuilder){
+        this.game = investigatorBuilder.getGame();
+        this.name = investigatorBuilder.getName();
+        this.health = investigatorBuilder.getHealth();
+        this.sanity = investigatorBuilder.getSanity();
+        this.focusLimit = investigatorBuilder.getFocusLimit();
+        this.lore = investigatorBuilder.getLore();
+        this.influence = investigatorBuilder.getInfluence();
+        this.observation = investigatorBuilder.getObservation();
+        this.strength = investigatorBuilder.getStrength();
+        this.will = investigatorBuilder.getWill();
+        this.space=investigatorBuilder.getStartNode();
+        this.assets=investigatorBuilder.getAssets();
+        this.talent=investigatorBuilder.getTalent();
+        this.money=investigatorBuilder.getMoney();
+        delayed = false;
+        withMonsters = false;
+        ready = false;
+        successes.add(5);
+        successes.add(6);
+    }
+
+    public Investigator(Game game, String name, int health, int sanity, int focusLimit, int lore,
+                        int influence, int observation, int strength, int will, Node location,
+                        Assets assets, Action talent, int money) {
+        this.game = game;
         this.name = name;
         this.health = health;
         this.sanity = sanity;
@@ -43,26 +78,15 @@ public class Investigator {
         this.observation = observation;
         this.strength = strength;
         this.will = will;
-        this.assets = assets;
-        this.actions = actions;
-        this.delayed = delayed;
-        this.withMonsters = withMonsters;
-        this.active = active;
-        updateSkills();
-    }
-
-    public void updateSkills(){
-        skills.put("lore", lore);
-        skills.put("influence", influence);
-        skills.put("observation", observation);
-        skills.put("strength", strength);
-        skills.put("will", will);
-    }
-
-    public void giveAdditional(int dices){
-        skills.put("additional", dices);
-
-
+        this.space=location;
+        this.assets=assets;
+        this.talent=talent;
+        this.money = money;
+        delayed = false;
+        withMonsters = false;
+        ready = false;
+        successes.add(5);
+        successes.add(6);
     }
 
 
@@ -76,4 +100,7 @@ public class Investigator {
         return dices;
     }
 
+    public Game getGame() {
+        return game;
+    }
 }
