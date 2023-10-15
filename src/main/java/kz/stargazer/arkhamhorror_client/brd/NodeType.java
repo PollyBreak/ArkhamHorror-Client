@@ -1,4 +1,4 @@
-package com.example.archam;
+package kz.stargazer.arkhamhorror_client.brd;
 
 public enum NodeType {
     Street_Park,

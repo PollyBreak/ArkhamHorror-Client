@@ -1,4 +1,4 @@
-package com.example.archam;
+package kz.stargazer.arkhamhorror_client.brd;
 
 import java.util.ArrayList;
 import java.util.List;
