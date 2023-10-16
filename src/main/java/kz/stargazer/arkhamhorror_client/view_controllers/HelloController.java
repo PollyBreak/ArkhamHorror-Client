@@ -20,7 +20,7 @@ public class HelloController {
 
     @FXML
     public void onSinglePlayerClick(ActionEvent actionEvent) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/views/single-creation.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/views/game.fxml"));
         ((Node)actionEvent.getSource()).getScene().setRoot(root);
     }
 }
