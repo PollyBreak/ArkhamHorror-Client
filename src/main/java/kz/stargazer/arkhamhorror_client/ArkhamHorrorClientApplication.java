@@ -21,7 +21,7 @@ public class ArkhamHorrorClientApplication extends Application {
         stage.setMaximized(true);
         stage.show();
 
-        Game game = new Game();
+        Game game = Game.createGame();
         Investigator hero = new InvestigatorBuilder().name("Daniela Reyes").game(game).health(7)
                 .sanity(5).skills(3,3,1,3, 3).focusLimit(3)
                 .money(3).build();

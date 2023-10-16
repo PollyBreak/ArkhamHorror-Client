@@ -30,7 +30,14 @@ public class Game {
         this.players = players;
     }
 
-
+private Game(){};
+  private static Game gameInstance;
+  public  static Game createGame(){
+        if (gameInstance == null){
+            gameInstance = new Game();
+        }
+        return gameInstance;
+  }
 
 
 
