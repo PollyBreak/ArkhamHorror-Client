@@ -34,6 +34,7 @@ public class Investigator {
     private int clues = 0;
     private Node space;
     private int actions = 2;
+    private int steps = 2;
     private ArrayList<Actions> doneActions = new ArrayList<>();
 
     private Action talent;
@@ -91,7 +92,7 @@ public class Investigator {
 
 
     public void move(Node node){
-
+        
         doAction(Actions.MOVE_ACTION);
     }
 
