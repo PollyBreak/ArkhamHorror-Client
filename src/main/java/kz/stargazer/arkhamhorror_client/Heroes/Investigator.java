@@ -113,4 +113,8 @@ public class Investigator {
     public Game getGame() {
         return game;
     }
+    public Node getSpace(){return space;}
+    public void setSpace(Node node){
+        space = node;
+    }
 }

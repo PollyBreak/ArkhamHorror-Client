@@ -17,6 +17,7 @@ public class Board {
 
     public void placePlayer(String spacename, Investigator player){
         this.nodepile.get(spacename).addPlayer(player);
+        player.setSpace(this.nodepile.get(spacename));
     }
     public Node fetchNode(String name){
         return this.nodepile.get(name);

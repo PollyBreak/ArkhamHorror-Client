@@ -1,18 +1,23 @@
 package kz.stargazer.arkhamhorror_client.view_controllers;
 
+import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Screen;
+import kz.stargazer.arkhamhorror_client.Heroes.Investigator;
+import kz.stargazer.arkhamhorror_client.Mechanics.Game;
 import kz.stargazer.arkhamhorror_client.brd.Board;
 import kz.stargazer.arkhamhorror_client.brd.Neighborhood;
 import kz.stargazer.arkhamhorror_client.brd.Node;
 import org.controlsfx.control.cell.ImageGridCell;
 
 public class BoardFX {
+    private Game game;
     private Board net;
+    private Group elements;
     private final String north_path = "C:\\javaprog\\arkham_project\\ArkhamHorror-Client\\src\\main\\resources\\views\\nort-map.png";
     private final String down_path = north_path;
     private final String east_path = north_path;
@@ -21,7 +26,10 @@ public class BoardFX {
     private final String st_lane_path = north_path;
     private final String st_park_path = north_path;
     private final String st_bridge_path = north_path;
-    public BoardFX(Board brd){net=brd;}
+    public BoardFX(Game gm){
+        game = gm;
+        net = gm.getBoard();
+    }
     public ScrollPane build(){
         Group northside = createHoodTile(north_path,100,200,net.neighborhoods.get("Northside"));
         Group downtown = createHoodTile(down_path,475,200,net.neighborhoods.get("Downtown"));
@@ -40,6 +48,7 @@ public class BoardFX {
         st6.setRotate(45);
         ImageView st7 = createSingleTile("Street",555,580, net.fetchNode("Street from Merchant District to Downtown"));
         Group biggroup = new Group(st1,st2,st3,st4,st5,st6,st7,northside,downtown,easttown,merchant,rivertown);
+        elements = biggroup;
         ScrollPane pane = new ScrollPane(biggroup);
         pane.setPrefSize(Screen.getPrimary().getVisualBounds().getWidth(),Screen.getPrimary().getVisualBounds().getHeight());
         pane.setPannable(true);
@@ -64,8 +73,9 @@ public class BoardFX {
         img.setFitHeight(h);
         img.setLayoutX(x);
         img.setLayoutY(y);
+        img.setUserData(link);
         img.setOnMouseClicked(e->{
-            img.setRotate(link.getName().length());
+            renderPlayer(game.getPlayers().get(0), img);
         });
         return img;
     }
@@ -79,21 +89,32 @@ public class BoardFX {
         Button mddl = new Button(hood.getNodes().get(1).getName());
         Button lower = new Button(hood.getNodes().get(2).getName());
         top.setOnAction(e->{
-            top.setText("test");
+            renderPlayer(game.getPlayers().get(0), top);
         });
         top.setLayoutX(img.getLayoutX()+50);
         top.setLayoutY(img.getLayoutY()+30);
+        top.setUserData(hood.getNodes().get(0));
         mddl.setOnAction(e->{
-            mddl.setText("test");
+            renderPlayer(game.getPlayers().get(0), mddl);
         });
         mddl.setLayoutX(img.getLayoutX()+50);
         mddl.setLayoutY(img.getLayoutY()+150);
+        mddl.setUserData(hood.getNodes().get(1));
         lower.setOnAction(e->{
-            lower.setText("test");
+            renderPlayer(game.getPlayers().get(0), lower);
         });
         lower.setLayoutX(img.getLayoutX()+50);
         lower.setLayoutY(img.getLayoutY()+270);
+        lower.setUserData(hood.getNodes().get(2));
         Group btngrp = new Group(top,mddl,lower);
         return new Group(img, btngrp);
+    }
+    private void renderPlayer(Investigator player, javafx.scene.Node anchor) {
+        ImageView img = new ImageView(new Image("C:\\javaprog\\arkham_project\\ArkhamHorror-Client\\src\\main\\resources\\views\\Daniel.png"));
+        img.setFitHeight(50);
+        img.setFitWidth(35);
+        img.setLayoutX(anchor.getLayoutX()+20);
+        img.setLayoutY(anchor.getLayoutY()-50);
+        elements.getChildren().add(img);
     }
 }
