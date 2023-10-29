@@ -143,4 +143,9 @@ public class Investigator {
     public void setAlive(boolean alive) {
         this.alive = alive;
     }
+    public Node getSpace(){return space;}
+    public void setSpace(Node node){
+        space = node;
+    }
+
 }
