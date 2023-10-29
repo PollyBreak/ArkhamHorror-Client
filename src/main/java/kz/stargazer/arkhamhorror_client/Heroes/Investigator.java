@@ -1,6 +1,7 @@
 package kz.stargazer.arkhamhorror_client.Heroes;
 
 import kz.stargazer.arkhamhorror_client.Assets.Action;
+import kz.stargazer.arkhamhorror_client.Assets.Actions;
 import kz.stargazer.arkhamhorror_client.Assets.AssetCard;
 import kz.stargazer.arkhamhorror_client.Assets.Assets;
 import kz.stargazer.arkhamhorror_client.Mechanics.Game;
@@ -33,10 +34,9 @@ public class Investigator {
     private int clues = 0;
     private Node space;
     private int actions = 2;
-    private ArrayList<Integer> doneActions = new ArrayList<>();
+    private ArrayList<Actions> doneActions = new ArrayList<>();
 
     private Action talent;
-
 
     private boolean delayed;
     private boolean withMonsters;
@@ -90,7 +90,16 @@ public class Investigator {
     }
 
 
-    public void move(){}
+    public void move(Node node){
+
+        doAction(Actions.MOVE_ACTION);
+    }
+
+    private void doAction(Actions action) {
+        doneActions.add(action);
+        actions--;
+    }
+
 
     public ArrayList<Integer> test(int skill){
         ArrayList<Integer> dices = new ArrayList<>();

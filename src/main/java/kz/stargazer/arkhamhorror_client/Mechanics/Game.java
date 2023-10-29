@@ -6,6 +6,7 @@ import kz.stargazer.arkhamhorror_client.Assets.Spell;
 import kz.stargazer.arkhamhorror_client.Heroes.Investigator;
 import kz.stargazer.arkhamhorror_client.Heroes.Monster;
 import kz.stargazer.arkhamhorror_client.brd.Board;
+import kz.stargazer.arkhamhorror_client.brd.BoardBuilder;
 import kz.stargazer.arkhamhorror_client.brd.Node;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ public class Game {
     private Plot plot;
     private Board board;
     private ArrayList<Monster> monsters = new ArrayList<>();
-    private ArrayList<Investigator> players = new ArrayList<>();
+    private ArrayList<Investigator> players;
     private Node unstableSpace;
     private ArrayList<Item> items;
     private ArrayList<Spell> spells;
@@ -30,7 +31,13 @@ public class Game {
         this.players = players;
     }
 
-private Game(){};
+private Game(){
+    BoardBuilder boarder = new BoardBuilder();
+    this.board = boarder.build("Azatoth");
+    this.players = new ArrayList<>();
+};
+
+
   private static Game gameInstance;
   public  static Game createGame(){
         if (gameInstance == null){

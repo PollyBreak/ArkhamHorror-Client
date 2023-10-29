@@ -5,7 +5,7 @@ import java.util.HashSet;
 
 public class BoardBuilder {
     Board board;
-    BoardBuilder(){board = new Board();};
+    public BoardBuilder(){board = new Board();};
     public void buildNeighborhood_Rivertown(){
         Neighborhood rivertown = new Neighborhood("Rivertown", true);
         rivertown.addNode(new Node("Black Cave",NodeType.Child_Rivertown));
@@ -70,7 +70,7 @@ public class BoardBuilder {
     }
     private void fillNodePile(Node root, HashSet<Node> visited){
         visited.add(root);
-        board.nodepile.put(root.name,root);
+        board.getNodepile().put(root.name,root);
         for (Node node:
              root.neighbours) {
             if (!visited.contains(node)){

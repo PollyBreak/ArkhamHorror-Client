@@ -1,5 +1,8 @@
 package kz.stargazer.arkhamhorror_client.brd;
 
+import kz.stargazer.arkhamhorror_client.Heroes.Investigator;
+import kz.stargazer.arkhamhorror_client.Heroes.Monster;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,14 +11,19 @@ public class Node {
     String name;
     NodeType type;
     int doom;
-    boolean MONSTER_PLACEHOLDER = false; //monster class is to be added
-    boolean PLAYER_REF = false; //players have to be there as well?
+    private ArrayList<Monster> monsters;
+    private ArrayList<Investigator> heroes;
+
     Node(){};
     Node(String name, NodeType type, Node... neighbours){
         this.name = name;
         this.type= type;
         this.neighbours.addAll(List.of(neighbours));
+        this.heroes = new ArrayList<>();
+        this.monsters = new ArrayList<>();
     }
+
+
     public void setDoom(int count){
         doom = count;
     }
@@ -25,5 +33,22 @@ public class Node {
     }
     public void backlink(Node node){
         this.neighbours.add(node);
+    }
+
+
+    public ArrayList<Monster> getMonsters() {
+        return monsters;
+    }
+
+    public void setMonsters(ArrayList<Monster> monsters) {
+        this.monsters = monsters;
+    }
+
+    public ArrayList<Investigator> getHeroes() {
+        return heroes;
+    }
+
+    public void setHeroes(ArrayList<Investigator> heroes) {
+        this.heroes = heroes;
     }
 }
