@@ -18,7 +18,7 @@ public class GameController {
                 .sanity(5).skills(3,3,1,3, 3).focusLimit(3)
                 .money(3).build();
         game1.getPlayers().add(hero);
-        game1.getBoard().getNodepile().get("Arkham Advertiser").getHeroes().add(hero);
+        game1.getBoard().placePlayer("Arkham Advertiser",hero);
     }
 
 }

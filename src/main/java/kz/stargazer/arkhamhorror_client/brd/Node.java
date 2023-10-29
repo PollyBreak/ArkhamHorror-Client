@@ -23,9 +23,14 @@ public class Node {
         this.monsters = new ArrayList<>();
     }
 
-
+    public String getName(){
+        return name;
+    }
     public void setDoom(int count){
         doom = count;
+    }
+    public NodeType getType(){
+        return type;
     }
     public void link(Node node){
         this.neighbours.add(node);
@@ -50,5 +55,11 @@ public class Node {
 
     public void setHeroes(ArrayList<Investigator> heroes) {
         this.heroes = heroes;
+    }
+    public void addPlayer(Investigator player){
+        heroes.add(player);
+    }
+    public void removePlayer(Investigator player){
+        heroes.remove(player);
     }
 }

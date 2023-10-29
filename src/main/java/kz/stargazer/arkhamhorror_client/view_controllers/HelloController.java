@@ -6,6 +6,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import kz.stargazer.arkhamhorror_client.brd.Board;
+import kz.stargazer.arkhamhorror_client.brd.BoardBuilder;
 
 import java.io.IOException;
 
@@ -20,7 +22,7 @@ public class HelloController {
 
     @FXML
     public void onSinglePlayerClick(ActionEvent actionEvent) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/views/game.fxml"));
-        ((Node)actionEvent.getSource()).getScene().setRoot(root);
+        //Parent root = FXMLLoader.load(getClass().getResource("/views/game.fxml"));
+        ((Node)actionEvent.getSource()).getScene().setRoot(new BoardFX(new BoardBuilder().build("Azatoth")).build());
     }
 }
