@@ -115,48 +115,6 @@ public class Investigator {
         isAlive();
     }
 
-
-    ////////////////////////////GETTERS AND SETTERS//////////
-
-    public Game getGame() {
-        return game;
-    }
-
-    public int getHealth() {
-        return health;
-    }
-
-    public void setHealth(int health) {
-        this.health = health;
-    }
-
-    public int getSanity() {
-        return sanity;
-    }
-
-    public void setSanity(int sanity) {
-        this.sanity = sanity;
-    }
-
-    public boolean isAlive() {
-        return alive;
-    }
-
-    public void setAlive(boolean alive) {
-        this.alive = alive;
-    }
-    public Node getSpace(){return space;}
-    public void setSpace(Node node){
-        space = node;
-    }
-
-    public ArrayList<Integer> getLastTest() {
-        return lastTest;
-    }
-
-    public void setLastTest(ArrayList<Integer> lastTest) {
-        this.lastTest = lastTest;
-    }
     public boolean move(Node destination) {
         int maxDistance = 4;
         Queue<Node> queue = new LinkedList<>();
@@ -199,5 +157,55 @@ public class Investigator {
             System.out.println("The destination is too far.");
             return false;
         }
+    }
+
+    ////////////////////////////GETTERS AND SETTERS//////////
+
+    public Game getGame() {
+        return game;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public int getSanity() {
+        return sanity;
+    }
+
+    public void setSanity(int sanity) {
+        this.sanity = sanity;
+    }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
+    public Node getSpace(){return space;}
+    public void setSpace(Node node){
+        space = node;
+    }
+
+    public ArrayList<Integer> getLastTest() {
+        return lastTest;
+    }
+
+    public void setLastTest(ArrayList<Integer> lastTest) {
+        this.lastTest = lastTest;
+    }
+
+    public boolean isWithMonsters() {
+        return withMonsters;
+    }
+
+    public void setWithMonsters(boolean withMonsters) {
+        this.withMonsters = withMonsters;
     }
 }
