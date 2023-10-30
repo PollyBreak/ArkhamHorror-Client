@@ -9,10 +9,5 @@ public class Spell extends AssetCard{
     private int hands;
     private ArrayList<Integer> traits;
     private int sanityDecrease;
-    private Action actionStrategy;
 
-    @Override
-    public void use(Investigator investigator) {
-        actionStrategy.use(investigator);
-    }
 }

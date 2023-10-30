@@ -11,9 +11,17 @@ public class Item extends AssetCard{
     private int sanity;
     private ArrayList<Integer> traits;
 
-    private Action actionStrategy;
-    @Override
-    public void use(Investigator investigator) {
-        actionStrategy.use(investigator);
+    private boolean alive = true;
+
+    public void takeDamage(int damage) {
+        this.health -= damage;
+        isAlive();
     }
+
+    public void isAlive(){
+        if (health < 0) {
+            alive = false;
+        }
+    }
+
 }

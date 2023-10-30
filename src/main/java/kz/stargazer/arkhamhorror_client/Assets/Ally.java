@@ -5,10 +5,11 @@ import kz.stargazer.arkhamhorror_client.Heroes.Investigator;
 public class Ally extends AssetCard {
     private int health;
     private int sanity;
-    private Action actionStrategy;
+//    private Action actionStrategy;
+//
+//    @Override
+//    public void use(Investigator investigator) {
+//        actionStrategy.use(investigator);
+//    }
 
-    @Override
-    public void use(Investigator investigator) {
-        actionStrategy.use(investigator);
-    }
 }

@@ -37,6 +37,8 @@ public class Investigator {
     private int steps = 2;
     private ArrayList<Actions> doneActions = new ArrayList<>();
 
+    private ArrayList<Integer> lastTest = new ArrayList<>();
+
     private Action talent;
 
     private boolean delayed;
@@ -106,12 +108,17 @@ public class Investigator {
     public ArrayList<Integer> test(int skill){
         ArrayList<Integer> dices = new ArrayList<>();
         for (int i=0; i<skill; i++){
-            dices.add((int)(Math.random() * 6) + 1);
+            int dice = (int)(Math.random() * 6) + 1;
+            dices.add(dice);
+            lastTest.add(dice);
         }
         return dices;
     }
 
-
+    public void takeDamage(int damage) {
+        this.health -= damage;
+        isAlive();
+    }
 
 
     ////////////////////////////GETTERS AND SETTERS//////////
@@ -146,6 +153,14 @@ public class Investigator {
     public Node getSpace(){return space;}
     public void setSpace(Node node){
         space = node;
+    }
+
+    public ArrayList<Integer> getLastTest() {
+        return lastTest;
+    }
+
+    public void setLastTest(ArrayList<Integer> lastTest) {
+        this.lastTest = lastTest;
     }
 
 }
