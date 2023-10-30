@@ -11,11 +11,11 @@ import kz.stargazer.arkhamhorror_client.brd.Node;
 
 import java.util.ArrayList;
 
-public class Game {
+public class Game implements Publisher {
     private Plot plot;
     private Board board;
     private ArrayList<Monster> monsters = new ArrayList<>();
-    private ArrayList<Monster> monstersSubscribers = new ArrayList<>();
+    private ArrayList<Subscriber> monstersSubscribers = new ArrayList<>();
     private ArrayList<Investigator> players;
     private Node unstableSpace; ////////// for publish
     private ArrayList<Item> items;
@@ -23,6 +23,23 @@ public class Game {
     private ArrayList<Ally> allies;
     private ArrayList<Item> shop;
     private int current_action;
+
+    @Override
+    public void addMonster(Subscriber subscriber) {
+        monstersSubscribers.add(subscriber);
+    }
+
+    @Override
+    public void removeMonster(Subscriber subscriber) {
+        monstersSubscribers.remove(subscriber);
+    }
+
+    @Override
+    public void notifyMonsters() {
+        for(Subscriber monster : monstersSubscribers){
+            monster.update(this);
+        }
+    }
 
     public void play(){}
     public ArrayList<Investigator> getPlayers() {
