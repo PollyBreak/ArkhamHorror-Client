@@ -18,14 +18,16 @@ public class BoardFX {
     private Game game;
     private Board net;
     private Group elements;
-    private final String north_path = "C:\\javaprog\\arkham_project\\ArkhamHorror-Client\\src\\main\\resources\\views\\nort-map.png";
-    private final String down_path = north_path;
-    private final String east_path = north_path;
-    private final String merch_path = north_path;
-    private final String river_path = north_path;
-    private final String st_lane_path = north_path;
-    private final String st_park_path = north_path;
-    private final String st_bridge_path = north_path;
+    private final int offsetX = 200;
+    private final int offsetY = 200;
+    private final String north_path = "/images/tile_northside.png";
+    private final String down_path = "/images/tile_downtown.png";
+    private final String east_path = "/images/tile_easttown.png";
+    private final String merch_path = "/images/tile_merchant.png";
+    private final String river_path = "/images/tile_rivertown.png";
+    private final String st_lane_path = "/images/tile_lane.png";
+    private final String st_park_path = "/images/tile_park.png";
+    private final String st_bridge_path = "/images/tile_bridge.png";
     public BoardFX(Game gm){
         game = gm;
         net = gm.getBoard();
@@ -68,7 +70,7 @@ public class BoardFX {
             w = 125;
             h = 125;
         }
-        ImageView img = new ImageView(new Image(imgpath));
+        ImageView img = new ImageView(new Image(getClass().getResource(imgpath).toExternalForm()));
         img.setFitWidth(w);
         img.setFitHeight(h);
         img.setLayoutX(x);
@@ -80,7 +82,7 @@ public class BoardFX {
         return img;
     }
     private Group createHoodTile(String imgpath, int x, int y, Neighborhood hood){
-        ImageView img = new ImageView(new Image(imgpath));
+        ImageView img = new ImageView(new Image(getClass().getResource(imgpath).toExternalForm()));
         img.setFitWidth(300);
         img.setFitHeight(300);
         img.setLayoutX(x);
@@ -110,11 +112,25 @@ public class BoardFX {
         return new Group(img, btngrp);
     }
     private void renderPlayer(Investigator player, javafx.scene.Node anchor) {
-        ImageView img = new ImageView(new Image("C:\\javaprog\\arkham_project\\ArkhamHorror-Client\\src\\main\\resources\\views\\Daniel.png"));
+        for (javafx.scene.Node node:
+             elements.getChildren()) {
+            if (node.getUserData() == player){
+                elements.getChildren().remove(node);
+                break;
+            }
+        }
+        ImageView img = new ImageView(new Image(getClass().getResource("/images/player_daniel.png").toExternalForm()));
         img.setFitHeight(50);
         img.setFitWidth(35);
-        img.setLayoutX(anchor.getLayoutX()+20);
-        img.setLayoutY(anchor.getLayoutY()-50);
+        int localoffsetX = 20;
+        int localoffsetY = -50;
+        if (anchor instanceof ImageView){
+            localoffsetX= 30;
+            localoffsetY= 0;
+        }
+        img.setLayoutX(anchor.getLayoutX()+localoffsetX);
+        img.setLayoutY(anchor.getLayoutY()+localoffsetY);
+        img.setUserData(player);
         elements.getChildren().add(img);
     }
 }
