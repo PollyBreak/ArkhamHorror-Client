@@ -9,4 +9,5 @@ public class Patrol extends Monster{
     public void play() {
         move(destination);
     }
+
 }

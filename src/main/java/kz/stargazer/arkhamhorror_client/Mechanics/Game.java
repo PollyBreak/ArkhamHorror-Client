@@ -17,7 +17,7 @@ public class Game {
     private ArrayList<Monster> monsters = new ArrayList<>();
     private ArrayList<Monster> monstersSubscribers = new ArrayList<>();
     private ArrayList<Investigator> players;
-    private Node unstableSpace;
+    private Node unstableSpace; ////////// for publish
     private ArrayList<Item> items;
     private ArrayList<Spell> spells;
     private ArrayList<Ally> allies;
