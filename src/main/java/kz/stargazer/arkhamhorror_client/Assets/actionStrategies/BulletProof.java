@@ -7,6 +7,6 @@ public class BulletProof implements Action {
 
     @Override
     public void use(Investigator investigator) {
-        if
+        
     }
 }
