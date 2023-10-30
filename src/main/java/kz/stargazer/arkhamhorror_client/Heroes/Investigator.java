@@ -163,4 +163,11 @@ public class Investigator {
         this.lastTest = lastTest;
     }
 
+    public boolean isWithMonsters() {
+        return withMonsters;
+    }
+
+    public void setWithMonsters(boolean withMonsters) {
+        this.withMonsters = withMonsters;
+    }
 }
