@@ -43,6 +43,7 @@ public class Investigator {
     private boolean withMonsters;
     private boolean active;
     private boolean ready;
+    private boolean alive;
 
     public Investigator(InvestigatorBuilder investigatorBuilder){
         this.game = investigatorBuilder.getGame();
@@ -110,11 +111,41 @@ public class Investigator {
         return dices;
     }
 
+
+
+
+    ////////////////////////////GETTERS AND SETTERS//////////
+
     public Game getGame() {
         return game;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public int getSanity() {
+        return sanity;
+    }
+
+    public void setSanity(int sanity) {
+        this.sanity = sanity;
+    }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
     }
     public Node getSpace(){return space;}
     public void setSpace(Node node){
         space = node;
     }
+
 }
