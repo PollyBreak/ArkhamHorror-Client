@@ -46,4 +46,18 @@ public abstract class Monster {
 
     }
 
+    /////////// getters setters
+
+
+    public void setEngaged(boolean engaged) {
+        this.engaged = engaged;
+    }
+
+    public boolean isExhausted() {
+        return exhausted;
+    }
+
+    public void setExhausted(boolean exhausted) {
+        this.exhausted = exhausted;
+    }
 }
