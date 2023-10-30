@@ -1,13 +1,15 @@
 package kz.stargazer.arkhamhorror_client.Heroes;
 
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import kz.stargazer.arkhamhorror_client.Assets.Action;
 import kz.stargazer.arkhamhorror_client.Assets.Actions;
-import kz.stargazer.arkhamhorror_client.Assets.AssetCard;
 import kz.stargazer.arkhamhorror_client.Assets.Assets;
 import kz.stargazer.arkhamhorror_client.Mechanics.Game;
 import kz.stargazer.arkhamhorror_client.brd.Node;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Investigator {
     private Game game;
@@ -148,13 +150,30 @@ public class Investigator {
             }
         }
         if (found) {
-            doAction(Actions.MOVE_ACTION);
-            space.removePlayer(this);
-            space = destination;
-            destination.addPlayer(this);
-            return true;
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Do you want to spend "+String.valueOf(distance-3)+"$ to move?",ButtonType.OK,ButtonType.NO);
+            AtomicBoolean respond = new AtomicBoolean(true);
+            if (distance>3) {
+                alert.showAndWait().ifPresent(response -> {
+                    if (response.equals(ButtonType.OK)) {
+                        doAction(Actions.MOVE_ACTION);
+                        space.removePlayer(this);
+                        space = destination;
+                        destination.addPlayer(this);
+                        respond.set(true);
+                    } else {
+                        respond.set(false);
+                    }
+                });
+            } else {
+                doAction(Actions.MOVE_ACTION);
+                space.removePlayer(this);
+                space = destination;
+                destination.addPlayer(this);
+            }
+            return respond.get();
         } else {
-            System.out.println("The destination is too far.");
+            Alert alert = new Alert(Alert.AlertType.ERROR,"The destination is too far.", ButtonType.CLOSE);
+            alert.show();
             return false;
         }
     }
