@@ -6,8 +6,8 @@ import java.util.ArrayList;
 
 public interface Publisher {
 
-    public void addSubscriber(Subscriber subscriber);
-    public void removeMonsterSubscriber(Subscriber subscriber);
-    public void notifySubscribers();
+    public void addMonster(Subscriber subscriber);
+    public void removeMonster(Subscriber subscriber);
+    public void notifyMonsters();
 
 }
