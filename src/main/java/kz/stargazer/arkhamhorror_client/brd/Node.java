@@ -65,4 +65,8 @@ public class Node {
     public ArrayList<Node> getNeighbors(){
         return neighbours;
     }
+
+    public int getDoom() {
+        return doom;
+    }
 }

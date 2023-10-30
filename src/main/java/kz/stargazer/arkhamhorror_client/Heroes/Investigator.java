@@ -5,7 +5,10 @@ import javafx.scene.control.ButtonType;
 import kz.stargazer.arkhamhorror_client.Assets.Action;
 import kz.stargazer.arkhamhorror_client.Assets.Actions;
 import kz.stargazer.arkhamhorror_client.Assets.Assets;
+import kz.stargazer.arkhamhorror_client.Mechanics.StatePattern.ActionResult;
 import kz.stargazer.arkhamhorror_client.Mechanics.Game;
+import kz.stargazer.arkhamhorror_client.Mechanics.Phases;
+import kz.stargazer.arkhamhorror_client.Mechanics.StatePattern.WardResult;
 import kz.stargazer.arkhamhorror_client.brd.Node;
 
 import java.util.*;
@@ -47,6 +50,7 @@ public class Investigator {
     private boolean active;
     private boolean ready;
     private boolean alive;
+    private ActionResult actionResult;
 
     public Investigator(InvestigatorBuilder investigatorBuilder){
         this.game = investigatorBuilder.getGame();
@@ -99,6 +103,15 @@ public class Investigator {
     private void doAction(Actions action) {
         doneActions.add(action);
         actions--;
+        if (actions == 0 || ready) {
+            finishTurn();
+        }
+    }
+
+    private void finishTurn() {
+        game.runMonsterPhase();
+        actions = 2;
+        ready = false;
     }
 
 
@@ -114,68 +127,101 @@ public class Investigator {
 
     public void takeDamage(int damage) {
         this.health -= damage;
-        isAlive();
+        if (!isAlive()){
+            game.finish();
+        }
     }
 
     public boolean move(Node destination) {
-        int maxDistance = 4;
-        Queue<Node> queue = new LinkedList<>();
-        queue.add(getSpace());
-        int distance = 0;
-        boolean found = false;
-        HashSet<Node> visitedNodes = new HashSet<>();
-        visitedNodes.add(space);
+//        if (doneActions.contains(Actions.MOVE_ACTION)) {
+//            return false;
+//        } else {
+            int maxDistance = 4;
+            Queue<Node> queue = new LinkedList<>();
+            queue.add(getSpace());
+            int distance = 0;
+            boolean found = false;
+            HashSet<Node> visitedNodes = new HashSet<>();
+            visitedNodes.add(space);
 
-        while (!queue.isEmpty() && distance <= maxDistance) {
-            int nodesAtCurrentLevel = queue.size();
-            distance++;
+            while (!queue.isEmpty() && distance <= maxDistance) {
+                int nodesAtCurrentLevel = queue.size();
+                distance++;
 
-            for (int i = 0; i < nodesAtCurrentLevel; i++) {
-                Node node = queue.poll();
+                for (int i = 0; i < nodesAtCurrentLevel; i++) {
+                    Node node = queue.poll();
 
-                if (node == destination) {
-                    found = true;
-                    break;
-                }
-
-                for (Node neighbor : node.getNeighbors()) {
-                    if (!visitedNodes.contains(neighbor)) {
-                        visitedNodes.add(neighbor);
-                        queue.add(neighbor);
+                    if (node == destination) {
+                        found = true;
+                        break;
                     }
+
+                    for (Node neighbor : node.getNeighbors()) {
+                        if (!visitedNodes.contains(neighbor)) {
+                            visitedNodes.add(neighbor);
+                            queue.add(neighbor);
+                        }
+                    }
+                }
+                if (found) {
+                    break;
                 }
             }
             if (found) {
-                break;
-            }
-        }
-        if (found) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Do you want to spend "+String.valueOf(distance-3)+"$ to move?",ButtonType.OK,ButtonType.NO);
-            AtomicBoolean respond = new AtomicBoolean(true);
-            if (distance>3) {
-                alert.showAndWait().ifPresent(response -> {
-                    if (response.equals(ButtonType.OK)) {
-                        doAction(Actions.MOVE_ACTION);
-                        space.removePlayer(this);
-                        space = destination;
-                        destination.addPlayer(this);
-                        respond.set(true);
-                    } else {
-                        respond.set(false);
-                    }
-                });
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Do you want to spend "+String.valueOf(distance-3)+"$ to move?",ButtonType.OK,ButtonType.NO);
+                AtomicBoolean respond = new AtomicBoolean(true);
+                if (distance>3) {
+                    alert.showAndWait().ifPresent(response -> {
+                        if (response.equals(ButtonType.OK)) {
+                            doAction(Actions.MOVE_ACTION);
+                            space.removePlayer(this);
+                            space = destination;
+                            destination.addPlayer(this);
+                            respond.set(true);
+                        } else {
+                            respond.set(false);
+                        }
+                    });
+                } else {
+                    doAction(Actions.MOVE_ACTION); ///
+                    space.removePlayer(this);
+                    space = destination;
+                    destination.addPlayer(this);
+                }
+                return respond.get();
             } else {
-                doAction(Actions.MOVE_ACTION);
-                space.removePlayer(this);
-                space = destination;
-                destination.addPlayer(this);
+                Alert alert = new Alert(Alert.AlertType.ERROR,"The destination is too far.", ButtonType.CLOSE);
+                alert.show();
+                return false;
             }
-            return respond.get();
+//        }
+    }
+
+    public void ward() {
+        if (space.getDoom()==0 || doneActions.contains(Actions.WARD_ACTION)) {
+            return;
         } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR,"The destination is too far.", ButtonType.CLOSE);
-            alert.show();
-            return false;
+            game.setCurrent_action(Actions.WARD_ACTION);
+            test(lore);
+            actionResult = new WardResult(this, null);
         }
+    }
+
+    public void finishTest() {
+        actionResult.act();
+        if (game.getCurrentPhase() == Phases.ACTION_PHASE) {
+            doAction(game.getCurrent_action());
+        }
+    }
+
+    public int countSuccesses() {
+        int count = 0;
+        for (int dice: lastTest) {
+            if (successes.contains(dice)){
+                count++;
+            }
+        }
+        return count;
     }
 
     ////////////////////////////GETTERS AND SETTERS//////////
@@ -226,5 +272,21 @@ public class Investigator {
 
     public void setWithMonsters(boolean withMonsters) {
         this.withMonsters = withMonsters;
+    }
+
+    public int getClues() {
+        return clues;
+    }
+
+    public void setClues(int clues) {
+        this.clues = clues;
+    }
+
+    public ActionResult getActionResult() {
+        return actionResult;
+    }
+
+    public void setActionResult(ActionResult actionResult) {
+        this.actionResult = actionResult;
     }
 }

@@ -1,5 +1,6 @@
 package kz.stargazer.arkhamhorror_client.Mechanics;
 
+import kz.stargazer.arkhamhorror_client.Assets.Actions;
 import kz.stargazer.arkhamhorror_client.Assets.Ally;
 import kz.stargazer.arkhamhorror_client.Assets.Item;
 import kz.stargazer.arkhamhorror_client.Assets.Spell;
@@ -17,12 +18,15 @@ public class Game implements Publisher {
     private ArrayList<Monster> monsters = new ArrayList<>();
     private ArrayList<Subscriber> monstersSubscribers = new ArrayList<>();
     private ArrayList<Investigator> players;
-    private Node unstableSpace; ////////// for publish
+    private Node unstableSpace;
     private ArrayList<Item> items;
     private ArrayList<Spell> spells;
     private ArrayList<Ally> allies;
     private ArrayList<Item> shop;
-    private int current_action;
+    private Actions current_action;
+    private MonsterPhaseLogic monsterPhaseLogic;
+    private Phases currentPhase;
+
 
     @Override
     public void addMonster(Subscriber subscriber) {
@@ -41,7 +45,15 @@ public class Game implements Publisher {
         }
     }
 
-    public void play(){}
+    public void runMonsterPhase(){
+        monsterPhaseLogic.runPhase(this, monsters);
+    }
+
+    public void finish() {
+
+    }
+
+
     public ArrayList<Investigator> getPlayers() {
         return players;
     }
@@ -53,6 +65,7 @@ private Game(){
     BoardBuilder boarder = new BoardBuilder();
     this.board = boarder.build("Azatoth");
     this.players = new ArrayList<>();
+    this.currentPhase = Phases.ACTION_PHASE;
 };
 
 
@@ -132,11 +145,21 @@ private Game(){
         this.shop = shop;
     }
 
-    public int getCurrent_action() {
+    public Actions getCurrent_action() {
         return current_action;
     }
 
-    public void setCurrent_action(int current_action) {
+    public void setCurrent_action(Actions current_action) {
         this.current_action = current_action;
     }
+
+    public Phases getCurrentPhase() {
+        return currentPhase;
+    }
+
+    public void setCurrentPhase(Phases currentPhase) {
+        this.currentPhase = currentPhase;
+    }
+
+
 }
