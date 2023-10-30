@@ -62,4 +62,7 @@ public class Node {
     public void removePlayer(Investigator player){
         heroes.remove(player);
     }
+    public ArrayList<Node> getNeighbors(){
+        return neighbours;
+    }
 }

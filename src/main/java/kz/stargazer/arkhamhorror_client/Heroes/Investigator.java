@@ -7,8 +7,7 @@ import kz.stargazer.arkhamhorror_client.Assets.Assets;
 import kz.stargazer.arkhamhorror_client.Mechanics.Game;
 import kz.stargazer.arkhamhorror_client.brd.Node;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 public class Investigator {
     private Game game;
@@ -94,10 +93,6 @@ public class Investigator {
     }
 
 
-    public void move(Node node){
-        
-        doAction(Actions.MOVE_ACTION);
-    }
 
     private void doAction(Actions action) {
         doneActions.add(action);
@@ -162,5 +157,47 @@ public class Investigator {
     public void setLastTest(ArrayList<Integer> lastTest) {
         this.lastTest = lastTest;
     }
+    public boolean move(Node destination) {
+        int maxDistance = 4;
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(getSpace());
+        int distance = 0;
+        boolean found = false;
+        HashSet<Node> visitedNodes = new HashSet<>();
+        visitedNodes.add(space);
 
+        while (!queue.isEmpty() && distance <= maxDistance) {
+            int nodesAtCurrentLevel = queue.size();
+            distance++;
+
+            for (int i = 0; i < nodesAtCurrentLevel; i++) {
+                Node node = queue.poll();
+
+                if (node == destination) {
+                    found = true;
+                    break;
+                }
+
+                for (Node neighbor : node.getNeighbors()) {
+                    if (!visitedNodes.contains(neighbor)) {
+                        visitedNodes.add(neighbor);
+                        queue.add(neighbor);
+                    }
+                }
+            }
+            if (found) {
+                break;
+            }
+        }
+        if (found) {
+            doAction(Actions.MOVE_ACTION);
+            space.removePlayer(this);
+            space = destination;
+            destination.addPlayer(this);
+            return true;
+        } else {
+            System.out.println("The destination is too far.");
+            return false;
+        }
+    }
 }

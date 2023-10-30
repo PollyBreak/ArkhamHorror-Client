@@ -77,7 +77,9 @@ public class BoardFX {
         img.setLayoutY(y);
         img.setUserData(link);
         img.setOnMouseClicked(e->{
-            renderPlayer(game.getPlayers().get(0), img);
+            if (game.getPlayers().get(0).move((Node)img.getUserData())) {
+                renderPlayer(game.getPlayers().get(0), img);
+            }
         });
         return img;
     }
@@ -91,19 +93,25 @@ public class BoardFX {
         Button mddl = new Button(hood.getNodes().get(1).getName());
         Button lower = new Button(hood.getNodes().get(2).getName());
         top.setOnAction(e->{
-            renderPlayer(game.getPlayers().get(0), top);
+            if (game.getPlayers().get(0).move((Node)top.getUserData())) {
+                renderPlayer(game.getPlayers().get(0), top);
+            }
         });
         top.setLayoutX(img.getLayoutX()+50);
         top.setLayoutY(img.getLayoutY()+30);
         top.setUserData(hood.getNodes().get(0));
         mddl.setOnAction(e->{
-            renderPlayer(game.getPlayers().get(0), mddl);
+            if (game.getPlayers().get(0).move((Node)mddl.getUserData())) {
+                renderPlayer(game.getPlayers().get(0), mddl);
+            }
         });
         mddl.setLayoutX(img.getLayoutX()+50);
         mddl.setLayoutY(img.getLayoutY()+150);
         mddl.setUserData(hood.getNodes().get(1));
         lower.setOnAction(e->{
-            renderPlayer(game.getPlayers().get(0), lower);
+            if (game.getPlayers().get(0).move((Node)lower.getUserData())) {
+                renderPlayer(game.getPlayers().get(0), lower);
+            }
         });
         lower.setLayoutX(img.getLayoutX()+50);
         lower.setLayoutY(img.getLayoutY()+270);
