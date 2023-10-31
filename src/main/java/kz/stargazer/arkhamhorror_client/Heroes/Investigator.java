@@ -224,6 +224,19 @@ public class Investigator {
         return count;
     }
 
+    public void checkIfMonster() {
+        if (space.getMonsters().isEmpty()) {
+            withMonsters = false;
+        }
+        else {
+            for (Monster monster:space.getMonsters()){
+                if (!monster.isEngaged()){
+                    withMonsters = true;
+                }
+            }
+        }
+    }
+
     ////////////////////////////GETTERS AND SETTERS//////////
 
     public Game getGame() {

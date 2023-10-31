@@ -1,6 +1,5 @@
 package kz.stargazer.arkhamhorror_client.Heroes;
 
-import kz.stargazer.arkhamhorror_client.Mechanics.Game;
 import kz.stargazer.arkhamhorror_client.brd.Node;
 
 public abstract class Monster {
@@ -10,6 +9,7 @@ public abstract class Monster {
     private int damage;
     private int horror;
     private int health;
+    private Investigator goal;
 
     private boolean engaged;
     private boolean exhausted;
@@ -25,20 +25,26 @@ public abstract class Monster {
         player.setSanity(player.getSanity()-horror);
     }
 
-    public void isEngaged(){
+    public void checkEngaged(){
         if (!space.getHeroes().isEmpty()){
             this.engaged = true;
+            this.goal = space.getHeroes().get(0);
         } else {
             this.engaged = false;
+            this.goal = null;
         }
     }
 
     public void makeTurn() {
-        this.isEngaged();
-        if (engaged) {
-            hit(space.getHeroes().get(0));
+        if (isExhausted()){
+            exhausted = false;
+            checkEngaged();
         } else {
-            play();
+            if (engaged) {
+                hit(goal);
+            } else {
+                play();
+            }
         }
     }
 
@@ -59,6 +65,10 @@ public abstract class Monster {
 
     public void setExhausted(boolean exhausted) {
         this.exhausted = exhausted;
+    }
+
+    public boolean isEngaged() {
+        return engaged;
     }
     public void setSpace(Node space){this.space = space;}
 
