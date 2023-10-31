@@ -45,13 +45,13 @@ public class BoardFX {
         ImageView st1 = createSingleTile("Street",375,300, net.fetchNode("Street from Northside to Downtown"));
         ImageView st2 = createSingleTile("Street",750,300, net.fetchNode("Street from Downtown to Easttown"));
         ImageView st3 = createSingleTile("Street",275,430, net.fetchNode("Street from Merchant District to Northside"));
-        st3.setRotate(135);
+        st3.setRotate(45);
         ImageView st4 = createSingleTile("Street",450,430, net.fetchNode("Street from Merchant District to Downtown"));
-        st4.setRotate(45);
+        st4.setRotate(135);
         ImageView st5 = createSingleTile("Street",650,430, net.fetchNode("Street from Downtown to Rivertown"));
-        st5.setRotate(135);
+        st5.setRotate(45);
         ImageView st6 = createSingleTile("Street",850,430, net.fetchNode("Street from Rivertown to Easttown"));
-        st6.setRotate(45);
+        st6.setRotate(135);
         ImageView st7 = createSingleTile("Street",555,580, net.fetchNode("Street from Merchant District to Rivertown"));
         Group biggroup = new Group(st1,st2,st3,st4,st5,st6,st7,northside,downtown,easttown,merchant,rivertown);
         elements.getChildren().add(biggroup);
@@ -64,6 +64,7 @@ public class BoardFX {
              statusboxes.values()) {
             node.toFront();
         }
+        initRender();
         return pane;
     }
     private ImageView createSingleTile(String imgpath, int x, int y, Node link){
@@ -94,6 +95,7 @@ public class BoardFX {
         statusbox.setLayoutY(img.getLayoutY());
         statusbox.setPrefHeight(60);
         statusbox.setPrefWidth(40);
+        statusbox.setMouseTransparent(true);
         elements.getChildren().add(statusbox);
         statusboxes.put(img,statusbox);
         return img;
@@ -104,6 +106,7 @@ public class BoardFX {
         img.setFitHeight(300);
         img.setLayoutX(x);
         img.setLayoutY(y);
+        elements.getChildren().add(img);
         //
         Button top = new Button(hood.getNodes().get(0).getName());
         Button mddl = new Button(hood.getNodes().get(1).getName());
@@ -121,6 +124,7 @@ public class BoardFX {
         statusboxtop.setLayoutY(top.getLayoutY()-60);
         statusboxtop.setPrefHeight(60);
         statusboxtop.setPrefWidth(40);
+        statusboxtop.setMouseTransparent(true);
         elements.getChildren().add(statusboxtop);
         statusboxes.put(top,statusboxtop);
         //
@@ -137,6 +141,7 @@ public class BoardFX {
         statusboxmddl.setLayoutY(mddl.getLayoutY()-60);
         statusboxmddl.setPrefHeight(60);
         statusboxmddl.setPrefWidth(40);
+        statusboxmddl.setMouseTransparent(true);
         elements.getChildren().add(statusboxmddl);
         statusboxes.put(mddl,statusboxmddl);
         //
@@ -153,11 +158,23 @@ public class BoardFX {
         statusboxlower.setLayoutY(lower.getLayoutY()-60);
         statusboxlower.setPrefHeight(60);
         statusboxlower.setPrefWidth(40);
+        statusboxlower.setMouseTransparent(true);
         elements.getChildren().add(statusboxlower);
         statusboxes.put(lower,statusboxlower);
         //
         Group btngrp = new Group(top,mddl,lower);
         return new Group(img, btngrp);
+    }
+    private void initRender(){
+        for (Investigator player:
+             game.getPlayers()) {
+            for (javafx.scene.Node node:
+                 statusboxes.keySet()) {
+                if (player.getSpace()==node.getUserData()){
+                    renderPlayer(player,node);
+                }
+            }
+        }
     }
     private void renderPlayer(Investigator player, javafx.scene.Node anchor) {
         for (HBox node:
