@@ -35,6 +35,9 @@ public class GameFacadeIAzatoth implements GameFacadeInterface{
         Node monster2spawn = game.getBoard().fetchNode("Black Cave");
         Monster monster2 = new Patrol(game, "Robbed Figure",
                 "Black Cave", monster2spawn, 1, 0, 1);
+        game.subscribeMonsters(game.getMonsters().toArray(new Monster[0]));
+        game.setUnstableSpace(game.getBoard().fetchNode("Arkham Advertiser"));
+        game.notifyMonsters();
     }
     public Game getGame(){
         return game;

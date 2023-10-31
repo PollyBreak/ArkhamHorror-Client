@@ -37,9 +37,6 @@ public class BoardFX {
         game = gm;
         net = gm.getBoard();
         gm.setFX(this);
-        game.subscribeMonsters(game.getMonsters().toArray(new Monster[0]));
-        game.setUnstableSpace(net.fetchNode("Arkham Advertiser"));
-        game.notifyMonsters();
     }
     public ScrollPane build(){
         Group northside = createHoodTile(north_path,100,200,net.neighborhoods.get("Northside"));
