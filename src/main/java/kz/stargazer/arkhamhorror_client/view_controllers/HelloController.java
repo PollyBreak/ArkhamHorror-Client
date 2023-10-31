@@ -15,14 +15,7 @@ import kz.stargazer.arkhamhorror_client.brd.BoardBuilder;
 import java.io.IOException;
 
 public class HelloController {
-    @FXML
-    private Label welcomeText;
     Game game;
-    @FXML
-    protected void onHelloButtonClick() {
-        welcomeText.setText("Welcome to JavaFX Application!");
-    }
-
     @FXML
     public void onSinglePlayerClick(ActionEvent actionEvent) throws IOException {
         //Parent root = FXMLLoader.load(getClass().getResource("/views/game.fxml"));

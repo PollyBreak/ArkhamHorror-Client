@@ -9,12 +9,14 @@ import kz.stargazer.arkhamhorror_client.Heroes.Monster;
 import kz.stargazer.arkhamhorror_client.brd.Board;
 import kz.stargazer.arkhamhorror_client.brd.BoardBuilder;
 import kz.stargazer.arkhamhorror_client.brd.Node;
+import kz.stargazer.arkhamhorror_client.view_controllers.BoardFX;
 
 import java.util.ArrayList;
 
 public class Game implements Publisher {
     private Plot plot;
     private Board board;
+    private BoardFX fx;
     private ArrayList<Monster> monsters = new ArrayList<>();
     private ArrayList<Subscriber> monstersSubscribers = new ArrayList<>();
     private ArrayList<Investigator> players;
@@ -162,6 +164,8 @@ private Game(){
     public void setCurrentPhase(Phases currentPhase) {
         this.currentPhase = currentPhase;
     }
-
+    public void setFX (BoardFX fx){
+      this.fx = fx;
+    }
 
 }

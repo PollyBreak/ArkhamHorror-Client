@@ -36,6 +36,7 @@ public class BoardFX {
     public BoardFX(Game gm){
         game = gm;
         net = gm.getBoard();
+        gm.setFX(this);
     }
     public ScrollPane build(){
         Group northside = createHoodTile(north_path,100,200,net.neighborhoods.get("Northside"));
@@ -120,8 +121,8 @@ public class BoardFX {
                 renderPlayer(game.getPlayers().get(0), top);
             }
         });
-        top.setLayoutX(img.getLayoutX()+50);
-        top.setLayoutY(img.getLayoutY()+30);
+        top.setLayoutX(img.getLayoutX()+100);
+        top.setLayoutY(img.getLayoutY()+100);
         top.setUserData(hood.getNodes().get(0));
         HBox statusboxtop = new HBox();
         statusboxtop.setLayoutX(top.getLayoutX()+20);
@@ -139,8 +140,8 @@ public class BoardFX {
                 renderPlayer(game.getPlayers().get(0), mddl);
             }
         });
-        mddl.setLayoutX(img.getLayoutX()+50);
-        mddl.setLayoutY(img.getLayoutY()+150);
+        mddl.setLayoutX(img.getLayoutX()+25);
+        mddl.setLayoutY(img.getLayoutY()+200);
         mddl.setUserData(hood.getNodes().get(1));
         HBox statusboxmddl = new HBox();
         statusboxmddl.setLayoutX(mddl.getLayoutX()+20);
@@ -158,8 +159,8 @@ public class BoardFX {
                 renderPlayer(game.getPlayers().get(0), lower);
             }
         });
-        lower.setLayoutX(img.getLayoutX()+50);
-        lower.setLayoutY(img.getLayoutY()+270);
+        lower.setLayoutX(img.getLayoutX()+200);
+        lower.setLayoutY(img.getLayoutY()+200);
         lower.setUserData(hood.getNodes().get(2));
         HBox statusboxlower = new HBox();
         statusboxlower.setLayoutX(lower.getLayoutX()+20);
