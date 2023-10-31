@@ -64,22 +64,9 @@ public class Game implements Publisher {
         this.players = players;
     }
 
-private Game(){
-    BoardBuilder boarder = new BoardBuilder();
-    this.board = boarder.build("Azatoth");
-    this.players = new ArrayList<>();
-    this.currentPhase = Phases.ACTION_PHASE;
-    this.monsterPhaseLogic = new MonsterPhaseLogic();
-};
+    public Game(){};
 
 
-  private static Game gameInstance;
-  public  static Game createGame(){
-        if (gameInstance == null){
-            gameInstance = new Game();
-        }
-        return gameInstance;
-  }
 
 
 
@@ -168,4 +155,11 @@ private Game(){
       this.fx = fx;
     }
 
+    public MonsterPhaseLogic getMonsterPhaseLogic() {
+        return monsterPhaseLogic;
+    }
+
+    public void setMonsterPhaseLogic(MonsterPhaseLogic monsterPhaseLogic) {
+        this.monsterPhaseLogic = monsterPhaseLogic;
+    }
 }

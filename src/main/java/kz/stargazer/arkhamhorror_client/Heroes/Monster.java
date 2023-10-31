@@ -1,5 +1,6 @@
 package kz.stargazer.arkhamhorror_client.Heroes;
 
+import kz.stargazer.arkhamhorror_client.Mechanics.Game;
 import kz.stargazer.arkhamhorror_client.brd.Node;
 
 public abstract class Monster {
@@ -10,9 +11,22 @@ public abstract class Monster {
     private int horror;
     private int health;
     private Investigator goal;
-
+    private Game game;
     private boolean engaged;
     private boolean exhausted;
+
+    public Monster(Game game, String name, String spawn, Node space, int damage, int horror, int health) {
+        this.game = game;
+        this.name = name;
+        this.spawn = spawn;
+        this.space = space;
+        this.damage = damage;
+        this.horror = horror;
+        this.health = health;
+        checkEngaged();
+        exhausted = false;
+        game.getMonsters().add(this);
+    }
 
     public abstract void play();
 
@@ -73,4 +87,8 @@ public abstract class Monster {
     public void setSpace(Node space){this.space = space;}
 
     public Node getSpace() { return space;}
+
+    public Game getGame() {
+        return game;
+    }
 }
