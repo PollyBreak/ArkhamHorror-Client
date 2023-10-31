@@ -1,6 +1,7 @@
 package kz.stargazer.arkhamhorror_client.brd;
 
 import kz.stargazer.arkhamhorror_client.Heroes.Investigator;
+import kz.stargazer.arkhamhorror_client.Heroes.Monster;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,13 +20,16 @@ public class Board {
         this.nodepile.get(spacename).addPlayer(player);
         player.setSpace(this.nodepile.get(spacename));
     }
+    public void placeMonster(String spacename, Monster monster){
+        this.nodepile.get(spacename).addMonster(monster);
+        monster.setSpace(this.nodepile.get(spacename));
+    }
     public Node fetchNode(String name){
         return this.nodepile.get(name);
     }
     public HashMap<String, Node> getNodepile() {
         return nodepile;
     }
-
     public void setNodepile(HashMap<String, Node> nodepile) {
         this.nodepile = nodepile;
     }

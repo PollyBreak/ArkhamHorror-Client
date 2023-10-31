@@ -48,8 +48,6 @@ public abstract class Monster {
         }
     }
 
-
-
     public void move(Node node) {
 
     }
@@ -72,4 +70,7 @@ public abstract class Monster {
     public boolean isEngaged() {
         return engaged;
     }
+    public void setSpace(Node space){this.space = space;}
+
+    public Node getSpace() { return space;}
 }

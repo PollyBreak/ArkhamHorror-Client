@@ -62,10 +62,28 @@ public class Node {
     public void removePlayer(Investigator player){
         heroes.remove(player);
     }
+    public void addMonster(Monster monster){monsters.add(monster);}
+    public void removeMonster(Monster monster){monsters.remove(monster);}
     public ArrayList<Node> getNeighbors(){
         return neighbours;
     }
-
+    public boolean addDoom(){
+        doom++;
+        int overall = doom;
+        for (Node node:
+             neighbours) {
+            if (node.getType()==this.getType()){
+                overall+= node.getDoom();
+            }
+        }
+        if (overall==5||doom==3){
+            return true;
+        }
+        return false;
+    }
+    public void removeDoom(){
+        if(doom>0) doom--;
+    }
     public int getDoom() {
         return doom;
     }

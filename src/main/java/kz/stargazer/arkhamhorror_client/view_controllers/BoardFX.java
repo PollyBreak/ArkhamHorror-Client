@@ -9,6 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Screen;
 import kz.stargazer.arkhamhorror_client.Heroes.Investigator;
+import kz.stargazer.arkhamhorror_client.Heroes.Monster;
 import kz.stargazer.arkhamhorror_client.Mechanics.Game;
 import kz.stargazer.arkhamhorror_client.brd.Board;
 import kz.stargazer.arkhamhorror_client.brd.Neighborhood;
@@ -65,6 +66,7 @@ public class BoardFX {
             node.toFront();
         }
         initRender();
+        initDoom();
         return pane;
     }
     private ImageView createSingleTile(String imgpath, int x, int y, Node link){
@@ -96,6 +98,8 @@ public class BoardFX {
         statusbox.setPrefHeight(60);
         statusbox.setPrefWidth(40);
         statusbox.setMouseTransparent(true);
+        statusbox.setUserData(link);
+        statusbox.setAlignment(javafx.geometry.Pos.BOTTOM_LEFT);
         elements.getChildren().add(statusbox);
         statusboxes.put(img,statusbox);
         return img;
@@ -125,6 +129,8 @@ public class BoardFX {
         statusboxtop.setPrefHeight(60);
         statusboxtop.setPrefWidth(40);
         statusboxtop.setMouseTransparent(true);
+        statusboxtop.setUserData(hood.getNodes().get(0));
+        statusboxtop.setAlignment(javafx.geometry.Pos.BOTTOM_LEFT);
         elements.getChildren().add(statusboxtop);
         statusboxes.put(top,statusboxtop);
         //
@@ -142,6 +148,8 @@ public class BoardFX {
         statusboxmddl.setPrefHeight(60);
         statusboxmddl.setPrefWidth(40);
         statusboxmddl.setMouseTransparent(true);
+        statusboxmddl.setUserData(hood.getNodes().get(1));
+        statusboxmddl.setAlignment(javafx.geometry.Pos.BOTTOM_LEFT);
         elements.getChildren().add(statusboxmddl);
         statusboxes.put(mddl,statusboxmddl);
         //
@@ -159,6 +167,8 @@ public class BoardFX {
         statusboxlower.setPrefHeight(60);
         statusboxlower.setPrefWidth(40);
         statusboxlower.setMouseTransparent(true);
+        statusboxlower.setUserData(hood.getNodes().get(2));
+        statusboxlower.setAlignment(javafx.geometry.Pos.BOTTOM_LEFT);
         elements.getChildren().add(statusboxlower);
         statusboxes.put(lower,statusboxlower);
         //
@@ -172,6 +182,15 @@ public class BoardFX {
                  statusboxes.keySet()) {
                 if (player.getSpace()==node.getUserData()){
                     renderPlayer(player,node);
+                }
+            }
+        }
+        for (Monster monster:
+             game.getMonsters()){
+            for (javafx.scene.Node node:
+                    statusboxes.keySet()) {
+                if (monster.getSpace()==node.getUserData()){
+                    renderMonster(monster,node);
                 }
             }
         }
@@ -192,5 +211,58 @@ public class BoardFX {
         img.setFitWidth(40);
         img.setUserData(player);
         statusboxes.get(anchor).getChildren().add(img);
+    }
+    private void renderMonster(Monster monster, javafx.scene.Node destination){
+        ImageView img = new ImageView(new Image(getClass().getResource("/images/monster_patrol.jpg").toExternalForm()));
+        img.setFitHeight(60);
+        img.setFitWidth(40);
+        img.setUserData(monster);
+        for (HBox node:
+                statusboxes.values()){
+            if (node.getUserData()==destination){
+                node.getChildren().add(img);
+            }
+            for (javafx.scene.Node image:
+                    node.getChildren()) {
+                if (image.getUserData() == monster){
+                    node.getChildren().remove(image);
+                    break;
+                }
+            }
+        }
+    }
+    private void renderDoom(Node space){
+        ImageView img = new ImageView(new Image(getClass().getResource("/images/doom.png").toExternalForm()));
+        img.setFitHeight(35);
+        img.setFitWidth(35);
+        img.setUserData("doom");
+        for (HBox node:
+                statusboxes.values()){
+            if (node.getUserData()==space){
+                node.getChildren().add(img);
+            }
+        }
+    }
+    private void destroyDoom(Node space){
+        for (HBox node:
+                statusboxes.values()){
+            if (node.getUserData()==space){
+                for (javafx.scene.Node image:
+                        node.getChildren()) {
+                    if (image.getUserData() == "doom"){
+                        node.getChildren().remove(image);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    private void initDoom(){
+        for (Node node:
+             net.getNodepile().values()) {
+            for (int i = node.getDoom();i>0;i--){
+                renderDoom(node);
+            }
+        }
     }
 }
