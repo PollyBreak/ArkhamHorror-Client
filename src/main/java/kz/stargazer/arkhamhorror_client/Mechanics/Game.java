@@ -46,7 +46,8 @@ public class Game implements Publisher {
     }
 
     public void runMonsterPhase(){
-        monsterPhaseLogic.runPhase(this, monsters);
+        currentPhase = Phases.ACTION_PHASE;
+        monsterPhaseLogic.runPhase(this);
     }
 
     public void finish() {
@@ -66,6 +67,7 @@ private Game(){
     this.board = boarder.build("Azatoth");
     this.players = new ArrayList<>();
     this.currentPhase = Phases.ACTION_PHASE;
+    this.monsterPhaseLogic = new MonsterPhaseLogic();
 };
 
 

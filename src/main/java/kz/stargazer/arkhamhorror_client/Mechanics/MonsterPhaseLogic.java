@@ -6,7 +6,10 @@ import java.util.ArrayList;
 
 public class MonsterPhaseLogic {
 
-    public void runPhase(Game game, ArrayList<Monster> monsters) {
-
+    public void runPhase(Game game) {
+        for (Monster monster:game.getMonsters()){
+            monster.makeTurn();
+        }
+        game.setCurrentPhase(Phases.ACTION_PHASE);
     }
 }

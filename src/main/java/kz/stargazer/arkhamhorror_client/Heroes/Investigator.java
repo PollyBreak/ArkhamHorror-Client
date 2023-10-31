@@ -8,6 +8,7 @@ import kz.stargazer.arkhamhorror_client.Assets.Assets;
 import kz.stargazer.arkhamhorror_client.Mechanics.StatePattern.ActionResult;
 import kz.stargazer.arkhamhorror_client.Mechanics.Game;
 import kz.stargazer.arkhamhorror_client.Mechanics.Phases;
+import kz.stargazer.arkhamhorror_client.Mechanics.StatePattern.EvadeResult;
 import kz.stargazer.arkhamhorror_client.Mechanics.StatePattern.WardResult;
 import kz.stargazer.arkhamhorror_client.brd.Node;
 
@@ -177,6 +178,7 @@ public class Investigator {
                             space.removePlayer(this);
                             space = destination;
                             destination.addPlayer(this);
+                            checkIfMonster();
                             respond.set(true);
                         } else {
                             respond.set(false);
@@ -186,6 +188,7 @@ public class Investigator {
                     doAction(Actions.MOVE_ACTION); ///
                     space.removePlayer(this);
                     space = destination;
+                    checkIfMonster();
                     destination.addPlayer(this);
                 }
                 return respond.get();
@@ -205,6 +208,11 @@ public class Investigator {
             test(lore);
             actionResult = new WardResult(this, null);
         }
+    }
+
+    public void evade(Monster monster) {
+        test(observation);
+        actionResult = new EvadeResult(this, null, monster);
     }
 
     public void finishTest() {
@@ -230,7 +238,7 @@ public class Investigator {
         }
         else {
             for (Monster monster:space.getMonsters()){
-                if (!monster.isEngaged()){
+                if (!(monster.isEngaged())&&!(monster.isExhausted())){
                     withMonsters = true;
                 }
             }
