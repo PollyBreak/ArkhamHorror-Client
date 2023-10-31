@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.stage.Screen;
 import kz.stargazer.arkhamhorror_client.Heroes.Investigator;
 import kz.stargazer.arkhamhorror_client.Mechanics.Game;
@@ -14,10 +15,13 @@ import kz.stargazer.arkhamhorror_client.brd.Neighborhood;
 import kz.stargazer.arkhamhorror_client.brd.Node;
 import org.controlsfx.control.cell.ImageGridCell;
 
+import java.util.HashMap;
+
 public class BoardFX {
     private Game game;
     private Board net;
-    private Group elements;
+    private Group elements = new Group();
+    private HashMap<javafx.scene.Node,HBox> statusboxes = new HashMap<>();
     private final int offsetX = 200;
     private final int offsetY = 200;
     private final String north_path = "/images/tile_northside.png";
@@ -48,14 +52,18 @@ public class BoardFX {
         st5.setRotate(135);
         ImageView st6 = createSingleTile("Street",850,430, net.fetchNode("Street from Rivertown to Easttown"));
         st6.setRotate(45);
-        ImageView st7 = createSingleTile("Street",555,580, net.fetchNode("Street from Merchant District to Downtown"));
+        ImageView st7 = createSingleTile("Street",555,580, net.fetchNode("Street from Merchant District to Rivertown"));
         Group biggroup = new Group(st1,st2,st3,st4,st5,st6,st7,northside,downtown,easttown,merchant,rivertown);
-        elements = biggroup;
-        ScrollPane pane = new ScrollPane(biggroup);
+        elements.getChildren().add(biggroup);
+        ScrollPane pane = new ScrollPane(elements);
         pane.setPrefSize(Screen.getPrimary().getVisualBounds().getWidth(),Screen.getPrimary().getVisualBounds().getHeight());
         pane.setPannable(true);
         pane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         pane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        for (javafx.scene.Node node:
+             statusboxes.values()) {
+            node.toFront();
+        }
         return pane;
     }
     private ImageView createSingleTile(String imgpath, int x, int y, Node link){
@@ -81,6 +89,13 @@ public class BoardFX {
                 renderPlayer(game.getPlayers().get(0), img);
             }
         });
+        HBox statusbox = new HBox();
+        statusbox.setLayoutX(img.getLayoutX()+40);
+        statusbox.setLayoutY(img.getLayoutY());
+        statusbox.setPrefHeight(60);
+        statusbox.setPrefWidth(40);
+        elements.getChildren().add(statusbox);
+        statusboxes.put(img,statusbox);
         return img;
     }
     private Group createHoodTile(String imgpath, int x, int y, Neighborhood hood){
@@ -89,6 +104,7 @@ public class BoardFX {
         img.setFitHeight(300);
         img.setLayoutX(x);
         img.setLayoutY(y);
+        //
         Button top = new Button(hood.getNodes().get(0).getName());
         Button mddl = new Button(hood.getNodes().get(1).getName());
         Button lower = new Button(hood.getNodes().get(2).getName());
@@ -100,6 +116,14 @@ public class BoardFX {
         top.setLayoutX(img.getLayoutX()+50);
         top.setLayoutY(img.getLayoutY()+30);
         top.setUserData(hood.getNodes().get(0));
+        HBox statusboxtop = new HBox();
+        statusboxtop.setLayoutX(top.getLayoutX()+20);
+        statusboxtop.setLayoutY(top.getLayoutY()-60);
+        statusboxtop.setPrefHeight(60);
+        statusboxtop.setPrefWidth(40);
+        elements.getChildren().add(statusboxtop);
+        statusboxes.put(top,statusboxtop);
+        //
         mddl.setOnAction(e->{
             if (game.getPlayers().get(0).move((Node)mddl.getUserData())) {
                 renderPlayer(game.getPlayers().get(0), mddl);
@@ -108,6 +132,14 @@ public class BoardFX {
         mddl.setLayoutX(img.getLayoutX()+50);
         mddl.setLayoutY(img.getLayoutY()+150);
         mddl.setUserData(hood.getNodes().get(1));
+        HBox statusboxmddl = new HBox();
+        statusboxmddl.setLayoutX(mddl.getLayoutX()+20);
+        statusboxmddl.setLayoutY(mddl.getLayoutY()-60);
+        statusboxmddl.setPrefHeight(60);
+        statusboxmddl.setPrefWidth(40);
+        elements.getChildren().add(statusboxmddl);
+        statusboxes.put(mddl,statusboxmddl);
+        //
         lower.setOnAction(e->{
             if (game.getPlayers().get(0).move((Node)lower.getUserData())) {
                 renderPlayer(game.getPlayers().get(0), lower);
@@ -116,29 +148,32 @@ public class BoardFX {
         lower.setLayoutX(img.getLayoutX()+50);
         lower.setLayoutY(img.getLayoutY()+270);
         lower.setUserData(hood.getNodes().get(2));
+        HBox statusboxlower = new HBox();
+        statusboxlower.setLayoutX(lower.getLayoutX()+20);
+        statusboxlower.setLayoutY(lower.getLayoutY()-60);
+        statusboxlower.setPrefHeight(60);
+        statusboxlower.setPrefWidth(40);
+        elements.getChildren().add(statusboxlower);
+        statusboxes.put(lower,statusboxlower);
+        //
         Group btngrp = new Group(top,mddl,lower);
         return new Group(img, btngrp);
     }
     private void renderPlayer(Investigator player, javafx.scene.Node anchor) {
-        for (javafx.scene.Node node:
-             elements.getChildren()) {
-            if (node.getUserData() == player){
-                elements.getChildren().remove(node);
-                break;
+        for (HBox node:
+             statusboxes.values()){
+            for (javafx.scene.Node img:
+                    node.getChildren()) {
+                if (img.getUserData() == player){
+                    node.getChildren().remove(img);
+                    break;
+                }
             }
         }
         ImageView img = new ImageView(new Image(getClass().getResource("/images/player_daniel.png").toExternalForm()));
-        img.setFitHeight(50);
-        img.setFitWidth(35);
-        int localoffsetX = 20;
-        int localoffsetY = -50;
-        if (anchor instanceof ImageView){
-            localoffsetX= 30;
-            localoffsetY= 0;
-        }
-        img.setLayoutX(anchor.getLayoutX()+localoffsetX);
-        img.setLayoutY(anchor.getLayoutY()+localoffsetY);
+        img.setFitHeight(60);
+        img.setFitWidth(40);
         img.setUserData(player);
-        elements.getChildren().add(img);
+        statusboxes.get(anchor).getChildren().add(img);
     }
 }
