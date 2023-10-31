@@ -2,17 +2,22 @@ package kz.stargazer.arkhamhorror_client.Facade;
 
 import kz.stargazer.arkhamhorror_client.Heroes.Investigator;
 import kz.stargazer.arkhamhorror_client.Heroes.InvestigatorBuilder;
+import kz.stargazer.arkhamhorror_client.Heroes.Monster;
+import kz.stargazer.arkhamhorror_client.Heroes.Patrol;
 import kz.stargazer.arkhamhorror_client.Mechanics.Game;
 import kz.stargazer.arkhamhorror_client.Mechanics.MonsterPhaseLogic;
 import kz.stargazer.arkhamhorror_client.Mechanics.Phases;
 import kz.stargazer.arkhamhorror_client.brd.BoardBuilder;
+import kz.stargazer.arkhamhorror_client.brd.Node;
 
 import java.util.ArrayList;
 
 public class GameFacadeIAzatoth implements GameFacadeInterface{
+    private static GameFacadeIAzatoth gameFacadeIAzatothInstance;
+
     @Override
     public void startGame() {
-        Game game = Game.createGame();
+        Game game = new Game();
         BoardBuilder boarder = new BoardBuilder();
         game.setBoard(boarder.build("Azatoth"));
         game.setPlayers(new ArrayList<>());
@@ -21,12 +26,24 @@ public class GameFacadeIAzatoth implements GameFacadeInterface{
         game.setMonsterPhaseLogic(monsterPhaseLogic);
         Investigator mainHero = new InvestigatorBuilder().name("Daniela Reyes").game(game).health(7)
                 .sanity(5).skills(3,3,1,3, 3).focusLimit(3)
-                .money(3).build();
+                .money(3).startSpace(game.getBoard().fetchNode("Arkham Advertiser")).build();
         game.getPlayers().add(mainHero);
-
-
+        Node monster1spawn = game.getBoard().fetchNode("Independance Square");
+        Monster monster1 = new Patrol(game,"Robbed Figure",
+                "Independance Square", monster1spawn, 1, 0, 1);
+        Node monster2spawn = game.getBoard().fetchNode("Black Cave");
+        Monster monster2 = new Patrol(game, "Robbed Figure",
+                "Black Cave", monster2spawn, 1, 0, 1);
     }
 
-    GameFacadeIAzatoth() {
+    private GameFacadeIAzatoth() {
     }
+
+    public static GameFacadeIAzatoth createGameFacadeIAzatoth(){
+        if (gameFacadeIAzatothInstance == null){
+            gameFacadeIAzatothInstance = new GameFacadeIAzatoth();
+        }
+        return gameFacadeIAzatothInstance;
+    }
+
 }

@@ -17,4 +17,8 @@ public class Patrol extends Monster implements Subscriber {
         move(destination);
     }
 
+    public Patrol(Game game, String name, String spawn, Node space, int damage, int horror, int health) {
+        super(game, name, spawn, space, damage, horror, health);
+    }
+
 }

@@ -62,17 +62,9 @@ public class Game implements Publisher {
         this.players = players;
     }
 
-private Game(){
-};
+    public Game(){};
 
 
-  private static Game gameInstance;
-  public  static Game createGame(){
-        if (gameInstance == null){
-            gameInstance = new Game();
-        }
-        return gameInstance;
-  }
 
 
 
