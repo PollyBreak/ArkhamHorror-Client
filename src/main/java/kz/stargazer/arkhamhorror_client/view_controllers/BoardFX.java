@@ -187,10 +187,10 @@ public class BoardFX {
         }
         for (Monster monster:
              game.getMonsters()){
-            for (javafx.scene.Node node:
-                    statusboxes.keySet()) {
+            for (HBox node:
+                    statusboxes.values()) {
                 if (monster.getSpace()==node.getUserData()){
-                    renderMonster(monster,node);
+                    renderMonster(monster,(Node)node.getUserData());
                 }
             }
         }
@@ -212,7 +212,7 @@ public class BoardFX {
         img.setUserData(player);
         statusboxes.get(anchor).getChildren().add(img);
     }
-    private void renderMonster(Monster monster, javafx.scene.Node destination){
+    private void renderMonster(Monster monster, Node destination){
         ImageView img = new ImageView(new Image(getClass().getResource("/images/monster_patrol.jpg").toExternalForm()));
         img.setFitHeight(60);
         img.setFitWidth(40);
