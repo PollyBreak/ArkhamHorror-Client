@@ -60,6 +60,14 @@ public class BoardBuilder {
         board.connectHoods("Downtown","Rivertown",5,NodeType.Street_Bridge);
         board.connectHoods("Rivertown","Easttown",6,NodeType.Street_Bridge);
         fillNodePile(board.neighborhoods.values().stream().findFirst().get().spaces.get(0),new HashSet<>());
+        //
+        board.fetchNode("Independance Square").addDoom();
+        board.fetchNode("Arkham Advertiser").addDoom();
+        board.fetchNode("Velma's Dinner").addDoom();
+        board.fetchNode("Black Cave").addDoom();
+        board.fetchNode("Unvisited Island").addDoom();
+        //
+
         return board;
     }
     public Board build(String scenario){

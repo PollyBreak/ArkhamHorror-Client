@@ -60,4 +60,7 @@ public abstract class Monster {
     public void setExhausted(boolean exhausted) {
         this.exhausted = exhausted;
     }
+    public void setSpace(Node space){this.space = space;}
+
+    public Node getSpace() { return space;}
 }
