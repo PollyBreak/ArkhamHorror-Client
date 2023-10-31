@@ -1,9 +1,16 @@
 package kz.stargazer.arkhamhorror_client.Heroes;
 
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import kz.stargazer.arkhamhorror_client.Assets.Actions;
 import kz.stargazer.arkhamhorror_client.Mechanics.Game;
+import kz.stargazer.arkhamhorror_client.Mechanics.Subscriber;
 import kz.stargazer.arkhamhorror_client.brd.Node;
 
-public abstract class Monster {
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+public abstract class Monster implements Subscriber {
     private String name;
     private String spawn;
     private Node space;
@@ -62,8 +69,52 @@ public abstract class Monster {
         }
     }
 
-    public void move(Node node) {
+    public void move(Node targetNode) {
+        List<Node> path = findPathWithinDistance(space, targetNode, 2);
+        if (path != null && !path.isEmpty()) {
+            space.removeMonster(this);
+            space = path.get(Math.min(2, path.size() - 1));
+            path.get(Math.min(2, path.size() - 1)).addMonster(this);
+            game.getFX().renderMonster(this,this.space);
+        } else {
+            System.out.println("No valid path within 2 nodes to the target.");
+        }
+    }
 
+    private List<Node> findPathWithinDistance(Node start, Node target, int maxDistance) {
+        Queue<Node> queue = new LinkedList<>();
+        Map<Node, Node> parentMap = new HashMap<>();
+        Set<Node> visited = new HashSet<>();
+
+        queue.add(start);
+        visited.add(start);
+
+        while (!queue.isEmpty()) {
+            Node current = queue.poll();
+
+            if (current == target) {
+                return buildPath(parentMap, target);
+            }
+            for (Node neighbor : current.getNeighbors()) {
+                if (!visited.contains(neighbor)) {
+                    queue.add(neighbor);
+                    visited.add(neighbor);
+                    parentMap.put(neighbor, current);
+                }
+            }
+        }
+        return null;
+    }
+
+    private List<Node> buildPath(Map<Node, Node> parentMap, Node target) {
+        List<Node> path = new ArrayList<>();
+        Node current = target;
+        while (current != null) {
+            path.add(current);
+            current = parentMap.get(current);
+        }
+        Collections.reverse(path);
+        return path;
     }
 
     /////////// getters setters

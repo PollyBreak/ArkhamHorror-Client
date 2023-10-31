@@ -20,10 +20,6 @@ public class ArkhamHorrorClientApplication extends Application {
         stage.setScene(scene);
         stage.setMaximized(true);
         stage.show();
-
-        Game game = Game.createGame();
-
-        
     }
 
     public static void main(String[] args) {

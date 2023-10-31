@@ -14,10 +14,10 @@ import java.util.ArrayList;
 
 public class GameFacadeIAzatoth implements GameFacadeInterface{
     private static GameFacadeIAzatoth gameFacadeIAzatothInstance;
-
+    private Game game;
     @Override
     public void startGame() {
-        Game game = new Game();
+        game = new Game();
         BoardBuilder boarder = new BoardBuilder();
         game.setBoard(boarder.build("Azatoth"));
         game.setPlayers(new ArrayList<>());
@@ -28,6 +28,7 @@ public class GameFacadeIAzatoth implements GameFacadeInterface{
                 .sanity(5).skills(3,3,1,3, 3).focusLimit(3)
                 .money(3).startSpace(game.getBoard().fetchNode("Arkham Advertiser")).build();
         game.getPlayers().add(mainHero);
+        game.getBoard().placePlayer(mainHero.getSpace().getName(),mainHero);
         Node monster1spawn = game.getBoard().fetchNode("Independance Square");
         Monster monster1 = new Patrol(game,"Robbed Figure",
                 "Independance Square", monster1spawn, 1, 0, 1);
@@ -35,7 +36,9 @@ public class GameFacadeIAzatoth implements GameFacadeInterface{
         Monster monster2 = new Patrol(game, "Robbed Figure",
                 "Black Cave", monster2spawn, 1, 0, 1);
     }
-
+    public Game getGame(){
+        return game;
+    }
     private GameFacadeIAzatoth() {
     }
 

@@ -37,6 +37,9 @@ public class BoardFX {
         game = gm;
         net = gm.getBoard();
         gm.setFX(this);
+        game.subscribeMonsters(game.getMonsters().toArray(new Monster[0]));
+        game.setUnstableSpace(net.fetchNode("Arkham Advertiser"));
+        game.notifyMonsters();
     }
     public ScrollPane build(){
         Group northside = createHoodTile(north_path,100,200,net.neighborhoods.get("Northside"));
@@ -191,7 +194,7 @@ public class BoardFX {
             for (HBox node:
                     statusboxes.values()) {
                 if (monster.getSpace()==node.getUserData()){
-                    renderMonster(monster,(Node)node.getUserData());
+                    renderMonster(monster, (Node)node.getUserData());
                 }
             }
         }
@@ -213,16 +216,9 @@ public class BoardFX {
         img.setUserData(player);
         statusboxes.get(anchor).getChildren().add(img);
     }
-    private void renderMonster(Monster monster, Node destination){
-        ImageView img = new ImageView(new Image(getClass().getResource("/images/monster_patrol.jpg").toExternalForm()));
-        img.setFitHeight(60);
-        img.setFitWidth(40);
-        img.setUserData(monster);
+    public void renderMonster(Monster monster, Node destination){
         for (HBox node:
-                statusboxes.values()){
-            if (node.getUserData()==destination){
-                node.getChildren().add(img);
-            }
+             statusboxes.values()) {
             for (javafx.scene.Node image:
                     node.getChildren()) {
                 if (image.getUserData() == monster){
@@ -231,8 +227,18 @@ public class BoardFX {
                 }
             }
         }
+        ImageView img = new ImageView(new Image(getClass().getResource("/images/monster_patrol.jpg").toExternalForm()));
+        img.setFitHeight(60);
+        img.setFitWidth(40);
+        img.setUserData(monster);
+        for (HBox node:
+                statusboxes.values()){
+            if ((Node)node.getUserData()==destination){
+                node.getChildren().add(img);
+            }
+        }
     }
-    private void renderDoom(Node space){
+    public void renderDoom(Node space){
         ImageView img = new ImageView(new Image(getClass().getResource("/images/doom.png").toExternalForm()));
         img.setFitHeight(35);
         img.setFitWidth(35);
@@ -244,7 +250,7 @@ public class BoardFX {
             }
         }
     }
-    private void destroyDoom(Node space){
+    public void destroyDoom(Node space){
         for (HBox node:
                 statusboxes.values()){
             if (node.getUserData()==space){

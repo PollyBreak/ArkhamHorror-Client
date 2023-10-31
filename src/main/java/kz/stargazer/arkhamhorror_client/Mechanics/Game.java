@@ -12,6 +12,9 @@ import kz.stargazer.arkhamhorror_client.brd.Node;
 import kz.stargazer.arkhamhorror_client.view_controllers.BoardFX;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 public class Game implements Publisher {
     private Plot plot;
@@ -63,7 +66,9 @@ public class Game implements Publisher {
     public void setPlayers(ArrayList<Investigator> players) {
         this.players = players;
     }
-
+    public void subscribeMonsters(Monster ... monsters){
+        monstersSubscribers.addAll(Arrays.asList(monsters));
+    }
     public Game(){};
 
 
@@ -75,7 +80,6 @@ public class Game implements Publisher {
     public Plot getPlot() {
         return plot;
     }
-
     public void setPlot(Plot plot) {
         this.plot = plot;
     }
@@ -103,7 +107,6 @@ public class Game implements Publisher {
     public void setUnstableSpace(Node unstableSpace) {
         this.unstableSpace = unstableSpace;
     }
-
     public ArrayList<Item> getItems() {
         return items;
     }
@@ -154,7 +157,7 @@ public class Game implements Publisher {
     public void setFX (BoardFX fx){
       this.fx = fx;
     }
-
+    public BoardFX getFX(){return fx;}
     public MonsterPhaseLogic getMonsterPhaseLogic() {
         return monsterPhaseLogic;
     }
