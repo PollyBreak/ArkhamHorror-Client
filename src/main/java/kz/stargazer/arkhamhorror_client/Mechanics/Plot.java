@@ -5,15 +5,27 @@ public class Plot {
     private int doom = 0;
     private int clues = 0;
 
-    public int getDoom() {
-        return doom;
-    }
-
-    public void setDoom(int doom) {
-        this.doom = doom;
+    public void addDoom(int howMuch) {
+        this.doom = doom + howMuch;
         if (doom >= 15) {
             game.finish();
         }
+    }
+
+//    public void addClues(int howMuch) {
+//        this.clues = clues + howMuch;
+//        if (clues >= 6) {
+//            game.finish();
+//        }
+//    }
+
+
+
+    public int getDoom() {
+        return doom;
+    }
+    public void setDoom(int doom) {
+        this.doom = doom;
     }
 
     public Game getGame() {
