@@ -6,6 +6,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import kz.stargazer.arkhamhorror_client.Heroes.Investigator;
 import kz.stargazer.arkhamhorror_client.Heroes.Monster;
@@ -36,7 +37,7 @@ public class BoardFX {
         net = gm.getBoard();
         gm.setFX(this);
     }
-    public ScrollPane build(){
+    public HBox build(){
         Group northside = createHoodTile(north_path,100,200,net.neighborhoods.get("Northside"));
         Group downtown = createHoodTile(down_path,475,200,net.neighborhoods.get("Downtown"));
         Group easttown = createHoodTile(east_path,850,200,net.neighborhoods.get("Easttown"));
@@ -66,7 +67,16 @@ public class BoardFX {
         }
         initRender();
         initDoom();
-        return pane;
+        Button wardbtn = new Button("Ward");
+        wardbtn.setOnAction(e->{
+            if(game.getPlayers().get(0).ward()){
+                destroyDoom(game.getPlayers().get(0).getSpace());
+            }
+        });
+        VBox actionbox = new VBox(wardbtn);
+        actionbox.setPrefWidth(200);
+        HBox bigbox = new HBox(pane,actionbox);
+        return bigbox;
     }
     private ImageView createSingleTile(String imgpath, int x, int y, Node link){
         int w = 300;
