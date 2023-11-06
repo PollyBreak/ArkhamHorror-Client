@@ -1,5 +1,6 @@
 package kz.stargazer.arkhamhorror_client.view_controllers;
 
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -69,12 +70,18 @@ public class BoardFX {
         initDoom();
         Button wardbtn = new Button("Ward");
         wardbtn.setOnAction(e->{
-            if(game.getPlayers().get(0).ward()){
-                destroyDoom(game.getPlayers().get(0).getSpace());
+            int res = game.getPlayers().get(0).ward();
+            if(res>0){
+                for (int i =0;i<res;i++) destroyDoom(game.getPlayers().get(0).getSpace());
             }
         });
-        VBox actionbox = new VBox(wardbtn);
-        actionbox.setPrefWidth(200);
+        Button moneybtn = new Button("Gather Resources");
+        moneybtn.setOnAction(e->{
+            game.getPlayers().get(0).gatherMoney();
+        });
+        VBox actionbox = new VBox(wardbtn,moneybtn);
+        actionbox.setPrefWidth(400);
+        actionbox.setAlignment(Pos.CENTER);
         HBox bigbox = new HBox(pane,actionbox);
         return bigbox;
     }
@@ -104,8 +111,8 @@ public class BoardFX {
         HBox statusbox = new HBox();
         statusbox.setLayoutX(img.getLayoutX()+40);
         statusbox.setLayoutY(img.getLayoutY());
-        statusbox.setPrefHeight(60);
-        statusbox.setPrefWidth(40);
+//        statusbox.setPrefHeight(60);
+//        statusbox.setPrefWidth(40);
         //statusbox.setMouseTransparent(true);
         statusbox.setUserData(link);
         statusbox.setAlignment(javafx.geometry.Pos.BOTTOM_LEFT);
@@ -135,8 +142,8 @@ public class BoardFX {
         HBox statusboxtop = new HBox();
         statusboxtop.setLayoutX(top.getLayoutX()+20);
         statusboxtop.setLayoutY(top.getLayoutY()-60);
-        statusboxtop.setPrefHeight(60);
-        statusboxtop.setPrefWidth(40);
+//        statusboxtop.setPrefHeight(60);
+//        statusboxtop.setPrefWidth(40);
         //statusboxtop.setMouseTransparent(true);
         statusboxtop.setUserData(hood.getNodes().get(0));
         statusboxtop.setAlignment(javafx.geometry.Pos.BOTTOM_LEFT);
@@ -154,8 +161,8 @@ public class BoardFX {
         HBox statusboxmddl = new HBox();
         statusboxmddl.setLayoutX(mddl.getLayoutX()+20);
         statusboxmddl.setLayoutY(mddl.getLayoutY()-60);
-        statusboxmddl.setPrefHeight(60);
-        statusboxmddl.setPrefWidth(40);
+//        statusboxmddl.setPrefHeight(60);
+//        statusboxmddl.setPrefWidth(40);
         //statusboxmddl.setMouseTransparent(true);
         statusboxmddl.setUserData(hood.getNodes().get(1));
         statusboxmddl.setAlignment(javafx.geometry.Pos.BOTTOM_LEFT);
@@ -173,8 +180,8 @@ public class BoardFX {
         HBox statusboxlower = new HBox();
         statusboxlower.setLayoutX(lower.getLayoutX()+20);
         statusboxlower.setLayoutY(lower.getLayoutY()-60);
-        statusboxlower.setPrefHeight(60);
-        statusboxlower.setPrefWidth(40);
+//        statusboxlower.setPrefHeight(60);
+//        statusboxlower.setPrefWidth(40);
         //statusboxlower.setMouseTransparent(true);
         statusboxlower.setUserData(hood.getNodes().get(2));
         statusboxlower.setAlignment(javafx.geometry.Pos.BOTTOM_LEFT);
@@ -232,18 +239,14 @@ public class BoardFX {
                 }
             }
         }
-        ImageView img = new ImageView(new Image(getClass().getResource("/images/monster_patrol.jpg").toExternalForm()));
+        ImageView img = new ImageView(new Image(getClass().getResource("/images/monsters/"+monster.getName()+".jpg").toExternalForm()));
         img.setFitHeight(60);
         img.setFitWidth(40);
         img.setUserData(monster);
-        img.setOnMouseEntered(e->{
-            img.setScaleX(4);
-            img.setScaleY(4);
-            img.toFront();
-        });
         img.setOnMouseExited(e->{
-            img.setScaleX(1);
-            img.setScaleY(1);
+            //img.setScaleX(1);
+            //img.setScaleY(1);
+            elements.getChildren().remove(elements.getChildren().size()-1);
         });
         for (HBox node:
                 statusboxes.values()){
@@ -251,6 +254,17 @@ public class BoardFX {
                 node.getChildren().add(img);
             }
         }
+        img.setOnMouseEntered(e->{
+            ImageView zoom = new ImageView(img.getImage());
+            zoom.setFitWidth(img.getFitWidth());
+            zoom.setFitHeight(img.getFitHeight());
+            zoom.setLayoutX(img.getParent().getLayoutX());
+            zoom.setLayoutY(img.getParent().getLayoutY()+100);
+            zoom.setScaleX(4);
+            zoom.setScaleY(4);
+            zoom.setMouseTransparent(true);
+            elements.getChildren().add(zoom);
+        });
     }
     public void renderDoom(Node space){
         ImageView img = new ImageView(new Image(getClass().getResource("/images/doom.png").toExternalForm()));

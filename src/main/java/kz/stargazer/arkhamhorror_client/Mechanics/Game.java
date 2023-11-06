@@ -29,6 +29,10 @@ public class Game implements Publisher {
     private MonsterPhaseLogic monsterPhaseLogic;
     private Phases currentPhase;
 
+    public void addDoom(Node node){
+        board.fetchNode(node.getName()).addDoom();
+        fx.renderDoom(node);
+    }
 
     @Override
     public void addMonster(Subscriber subscriber) {

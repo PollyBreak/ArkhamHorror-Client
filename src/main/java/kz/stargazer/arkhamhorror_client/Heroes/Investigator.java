@@ -171,27 +171,35 @@ public class Investigator {
                 }
             }
             if (found) {
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Do you want to spend "+String.valueOf(distance-3)+"$ to move?",ButtonType.OK,ButtonType.NO);
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Do you want to spend "+String.valueOf(distance-3)+"$ to move? (You have "+String.valueOf(money)+")",ButtonType.OK,ButtonType.NO);
                 AtomicBoolean respond = new AtomicBoolean(true);
                 if (distance>3) {
+                    int finalDistance = distance;
                     alert.showAndWait().ifPresent(response -> {
                         if (response.equals(ButtonType.OK)) {
-                            doAction(Actions.MOVE_ACTION);
-                            space.removePlayer(this);
-                            space = destination;
-                            destination.addPlayer(this);
-                            checkIfMonster();
-                            respond.set(true);
+                            if (money>=finalDistance-3) {
+                                money-=finalDistance-3;
+                                space.removePlayer(this);
+                                space = destination;
+                                destination.addPlayer(this);
+                                checkIfMonster();
+                                respond.set(true);
+                                doAction(Actions.MOVE_ACTION);
+                            } else {
+                                Alert alert_reject = new Alert(Alert.AlertType.ERROR,"You do not have enough cash.", ButtonType.CLOSE);
+                                alert_reject.show();
+                                respond.set(false);
+                            }
                         } else {
                             respond.set(false);
                         }
                     });
                 } else {
-                    doAction(Actions.MOVE_ACTION); ///
                     space.removePlayer(this);
                     space = destination;
                     checkIfMonster();
                     destination.addPlayer(this);
+                    doAction(Actions.MOVE_ACTION);
                 }
                 return respond.get();
             } else {
@@ -202,15 +210,22 @@ public class Investigator {
 //        }
     }
 
-    public boolean ward() {
+    public int ward() {
         if (space.getDoom()==0 || doneActions.contains(Actions.WARD_ACTION)) {
-            return false;
+            return 0;
         } else {
-            doAction(Actions.WARD_ACTION);
             game.setCurrent_action(Actions.WARD_ACTION);
             test(lore);
             actionResult = new WardResult(this, null);
-            return true;
+            doAction(Actions.WARD_ACTION);
+            return 2;
+        }
+    }
+
+    public void gatherMoney(){
+        if (!doneActions.contains(Actions.GATHER_RESOURCES_ACTION)){
+            money++;
+            doAction(Actions.GATHER_RESOURCES_ACTION);
         }
     }
 

@@ -32,11 +32,11 @@ public class GameFacadeIAzatoth implements GameFacadeInterface{
         game.getPlayers().add(mainHero);
         game.getBoard().placePlayer(mainHero.getSpace().getName(),mainHero);
 
-        monsterFactory.createMonster(MonsterType.PATROL,game, "Robbed Figure","Independence Square",
+        monsterFactory.createMonster(MonsterType.PATROL,game, "Robed Figure","Independence Square",
                 1, 0, 1);
-        monsterFactory.createMonster(MonsterType.PATROL,game, "Robbed Figure","Black Cave",
+        monsterFactory.createMonster(MonsterType.PATROL,game, "Robed Figure","Black Cave",
                 1, 0, 1);
-        monsterFactory.createMonster(MonsterType.LURKER, game, "Lurker","Independence Square",
+        monsterFactory.createMonster(MonsterType.LURKER, game, "High Priest","Independence Square",
                 2, 1, 2);
         monsterFactory.createMonster(MonsterType.HUNTER, game, "Swift Byakhee","Independence Square",
                 2, 2, 3);

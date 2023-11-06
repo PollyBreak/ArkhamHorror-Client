@@ -7,9 +7,7 @@ import kz.stargazer.arkhamhorror_client.brd.Node;
 public class Lurker extends Monster {
     private Investigator player;
     @Override
-    public void play() {
-        getSpace().addDoom();
-    }
+    public void play() {getGame().addDoom(this.getSpace());}
 
     @Override
     public void update(Game game) {

@@ -143,4 +143,7 @@ public abstract class Monster implements Subscriber {
     public Game getGame() {
         return game;
     }
+    public String getName() {
+        return name;
+    }
 }
