@@ -15,6 +15,7 @@ import java.util.ArrayList;
 public class GameFacadeIAzatoth implements GameFacadeInterface{
     private static GameFacadeIAzatoth gameFacadeIAzatothInstance;
     private Game game;
+    private MonsterFactory monsterFactory= new MonsterFactory();
     @Override
     public void startGame() {
         game = new Game();
@@ -29,12 +30,16 @@ public class GameFacadeIAzatoth implements GameFacadeInterface{
                 .money(3).startSpace(game.getBoard().fetchNode("Arkham Advertiser")).build();
         game.getPlayers().add(mainHero);
         game.getBoard().placePlayer(mainHero.getSpace().getName(),mainHero);
-        Node monster1spawn = game.getBoard().fetchNode("Independence Square");
-        Monster monster1 = new Patrol(game,"Robbed Figure",
-                "Independence Square", monster1spawn, 1, 0, 1);
-        Node monster2spawn = game.getBoard().fetchNode("Black Cave");
-        Monster monster2 = new Patrol(game, "Robbed Figure",
-                "Black Cave", monster2spawn, 1, 0, 1);
+
+        monsterFactory.createMonster(MonsterType.PATROL,game, "Robbed Figure","Independance Square",
+                1, 0, 1);
+        monsterFactory.createMonster(MonsterType.PATROL,game, "Robbed Figure","Black Cave",
+                1, 0, 1);
+        monsterFactory.createMonster(MonsterType.LURKER, game, "Lurker","Independence Square",
+                2, 1, 2);
+        monsterFactory.createMonster(MonsterType.HUNTER, game, "Swift Byakhee","Independence Square",
+                2, 2, 3);
+
         game.subscribeMonsters(game.getMonsters().toArray(new Monster[0]));
         game.setUnstableSpace(game.getBoard().fetchNode("Arkham Advertiser"));
         game.notifyMonsters();

@@ -1,7 +1,7 @@
 package kz.stargazer.arkhamhorror_client.brd;
 
 import kz.stargazer.arkhamhorror_client.Heroes.Investigator;
-import kz.stargazer.arkhamhorror_client.Heroes.Monster;
+import kz.stargazer.arkhamhorror_client.Heroes.monsters.Monster;
 
 import java.util.ArrayList;
 import java.util.List;

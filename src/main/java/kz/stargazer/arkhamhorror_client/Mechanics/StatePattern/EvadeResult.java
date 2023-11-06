@@ -1,7 +1,7 @@
 package kz.stargazer.arkhamhorror_client.Mechanics.StatePattern;
 
 import kz.stargazer.arkhamhorror_client.Heroes.Investigator;
-import kz.stargazer.arkhamhorror_client.Heroes.Monster;
+import kz.stargazer.arkhamhorror_client.Heroes.monsters.Monster;
 
 public class EvadeResult extends ActionResult{
     private Monster monster;

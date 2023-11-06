@@ -5,6 +5,7 @@ import javafx.scene.control.ButtonType;
 import kz.stargazer.arkhamhorror_client.Assets.Action;
 import kz.stargazer.arkhamhorror_client.Assets.Actions;
 import kz.stargazer.arkhamhorror_client.Assets.Assets;
+import kz.stargazer.arkhamhorror_client.Heroes.monsters.Monster;
 import kz.stargazer.arkhamhorror_client.Mechanics.StatePattern.ActionResult;
 import kz.stargazer.arkhamhorror_client.Mechanics.Game;
 import kz.stargazer.arkhamhorror_client.Mechanics.Phases;

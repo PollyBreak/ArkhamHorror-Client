@@ -1,8 +1,9 @@
-package kz.stargazer.arkhamhorror_client.Heroes;
+package kz.stargazer.arkhamhorror_client.Heroes.monsters;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import kz.stargazer.arkhamhorror_client.Assets.Actions;
+import kz.stargazer.arkhamhorror_client.Heroes.Investigator;
 import kz.stargazer.arkhamhorror_client.Mechanics.Game;
 import kz.stargazer.arkhamhorror_client.Mechanics.Subscriber;
 import kz.stargazer.arkhamhorror_client.brd.Node;
@@ -22,11 +23,11 @@ public abstract class Monster implements Subscriber {
     private boolean engaged;
     private boolean exhausted;
 
-    public Monster(Game game, String name, String spawn, Node space, int damage, int horror, int health) {
+    public Monster(Game game, String name, String spawn, int damage, int horror, int health) {
         this.game = game;
         this.name = name;
         this.spawn = spawn;
-        this.space = space;
+        this.space = game.getBoard().fetchNode(spawn);
         this.damage = damage;
         this.horror = horror;
         this.health = health;
