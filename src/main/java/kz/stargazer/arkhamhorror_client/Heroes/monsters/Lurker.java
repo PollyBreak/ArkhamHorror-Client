@@ -15,8 +15,8 @@ public class Lurker extends Monster {
     public void update(Game game) {
     }
 
-    public Lurker(Game game, String name, String spawn, Node space, int damage, int horror, int health) {
-        super(game, name, spawn, space, damage, horror, health);
+    public Lurker(Game game, String name, String spawn, int damage, int horror, int health) {
+        super(game, name, spawn, damage, horror, health);
     }
 
 

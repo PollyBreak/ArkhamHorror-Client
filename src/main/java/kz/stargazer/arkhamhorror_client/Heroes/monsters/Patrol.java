@@ -17,8 +17,8 @@ public class Patrol extends Monster {
         move(destination);
     }
 
-    public Patrol(Game game, String name, String spawn, Node space, int damage, int horror, int health) {
-        super(game, name, spawn, space, damage, horror, health);
+    public Patrol(Game game, String name, String spawn, int damage, int horror, int health) {
+        super(game, name, spawn, damage, horror, health);
     }
 
 }

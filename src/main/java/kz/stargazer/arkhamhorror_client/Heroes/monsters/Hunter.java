@@ -15,13 +15,13 @@ public class Hunter extends Monster {
     public void update(Game game) {
     }
 
-    public Hunter(Game game, String name, String spawn, Node space, int damage, int horror, int health) {
-        super(game, name, spawn, space, damage, horror, health);
+    public Hunter(Game game, String name, String spawn, int damage, int horror, int health) {
+        super(game, name, spawn, damage, horror, health);
     }
 
-    public Hunter(Game game, String name, String spawn, Node space, int damage, int horror, int health,
+    public Hunter(Game game, String name, String spawn, int damage, int horror, int health,
                   Investigator player) {
-        super(game, name, spawn, space, damage, horror, health);
+        super(game, name, spawn, damage, horror, health);
         this.player = player;
     }
 
