@@ -2,8 +2,9 @@ package kz.stargazer.arkhamhorror_client.Facade;
 
 import kz.stargazer.arkhamhorror_client.Heroes.Investigator;
 import kz.stargazer.arkhamhorror_client.Heroes.InvestigatorBuilder;
-import kz.stargazer.arkhamhorror_client.Heroes.Monster;
-import kz.stargazer.arkhamhorror_client.Heroes.Patrol;
+import kz.stargazer.arkhamhorror_client.Heroes.monsters.Monster;
+import kz.stargazer.arkhamhorror_client.Heroes.monsters.factory.MonsterFactory;
+import kz.stargazer.arkhamhorror_client.Heroes.monsters.factory.MonsterType;
 import kz.stargazer.arkhamhorror_client.Mechanics.Game;
 import kz.stargazer.arkhamhorror_client.Mechanics.MonsterPhaseLogic;
 import kz.stargazer.arkhamhorror_client.Mechanics.Phases;
@@ -31,7 +32,7 @@ public class GameFacadeIAzatoth implements GameFacadeInterface{
         game.getPlayers().add(mainHero);
         game.getBoard().placePlayer(mainHero.getSpace().getName(),mainHero);
 
-        monsterFactory.createMonster(MonsterType.PATROL,game, "Robbed Figure","Independance Square",
+        monsterFactory.createMonster(MonsterType.PATROL,game, "Robbed Figure","Independence Square",
                 1, 0, 1);
         monsterFactory.createMonster(MonsterType.PATROL,game, "Robbed Figure","Black Cave",
                 1, 0, 1);
