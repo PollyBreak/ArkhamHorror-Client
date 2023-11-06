@@ -1,6 +1,5 @@
 package kz.stargazer.arkhamhorror_client.view_controllers;
 
-import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -9,12 +8,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Screen;
 import kz.stargazer.arkhamhorror_client.Heroes.Investigator;
-import kz.stargazer.arkhamhorror_client.Heroes.Monster;
+import kz.stargazer.arkhamhorror_client.Heroes.monsters.Monster;
 import kz.stargazer.arkhamhorror_client.Mechanics.Game;
 import kz.stargazer.arkhamhorror_client.brd.Board;
 import kz.stargazer.arkhamhorror_client.brd.Neighborhood;
 import kz.stargazer.arkhamhorror_client.brd.Node;
-import org.controlsfx.control.cell.ImageGridCell;
 
 import java.util.HashMap;
 

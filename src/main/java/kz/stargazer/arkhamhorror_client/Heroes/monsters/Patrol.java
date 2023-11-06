@@ -1,10 +1,10 @@
-package kz.stargazer.arkhamhorror_client.Heroes;
+package kz.stargazer.arkhamhorror_client.Heroes.monsters;
 
+import kz.stargazer.arkhamhorror_client.Heroes.monsters.Monster;
 import kz.stargazer.arkhamhorror_client.Mechanics.Game;
-import kz.stargazer.arkhamhorror_client.Mechanics.Subscriber;
 import kz.stargazer.arkhamhorror_client.brd.Node;
 
-public class Patrol extends Monster implements Subscriber {
+public class Patrol extends Monster {
     private Node destination;
 
     @Override

@@ -2,8 +2,8 @@ package kz.stargazer.arkhamhorror_client.Facade;
 
 import kz.stargazer.arkhamhorror_client.Heroes.Investigator;
 import kz.stargazer.arkhamhorror_client.Heroes.InvestigatorBuilder;
-import kz.stargazer.arkhamhorror_client.Heroes.Monster;
-import kz.stargazer.arkhamhorror_client.Heroes.Patrol;
+import kz.stargazer.arkhamhorror_client.Heroes.monsters.Monster;
+import kz.stargazer.arkhamhorror_client.Heroes.monsters.Patrol;
 import kz.stargazer.arkhamhorror_client.Mechanics.Game;
 import kz.stargazer.arkhamhorror_client.Mechanics.MonsterPhaseLogic;
 import kz.stargazer.arkhamhorror_client.Mechanics.Phases;

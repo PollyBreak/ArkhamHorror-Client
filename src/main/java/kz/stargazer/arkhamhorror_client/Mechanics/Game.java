@@ -5,16 +5,13 @@ import kz.stargazer.arkhamhorror_client.Assets.Ally;
 import kz.stargazer.arkhamhorror_client.Assets.Item;
 import kz.stargazer.arkhamhorror_client.Assets.Spell;
 import kz.stargazer.arkhamhorror_client.Heroes.Investigator;
-import kz.stargazer.arkhamhorror_client.Heroes.Monster;
+import kz.stargazer.arkhamhorror_client.Heroes.monsters.Monster;
 import kz.stargazer.arkhamhorror_client.brd.Board;
-import kz.stargazer.arkhamhorror_client.brd.BoardBuilder;
 import kz.stargazer.arkhamhorror_client.brd.Node;
 import kz.stargazer.arkhamhorror_client.view_controllers.BoardFX;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
 public class Game implements Publisher {
     private Plot plot;

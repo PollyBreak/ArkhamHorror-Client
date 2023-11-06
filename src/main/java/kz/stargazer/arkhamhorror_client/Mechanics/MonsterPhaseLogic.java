@@ -1,8 +1,6 @@
 package kz.stargazer.arkhamhorror_client.Mechanics;
 
-import kz.stargazer.arkhamhorror_client.Heroes.Monster;
-
-import java.util.ArrayList;
+import kz.stargazer.arkhamhorror_client.Heroes.monsters.Monster;
 
 public class MonsterPhaseLogic {
 
