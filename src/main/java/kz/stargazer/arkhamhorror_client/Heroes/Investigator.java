@@ -110,6 +110,7 @@ public class Investigator {
     }
 
     private void finishTurn() {
+        doneActions = new ArrayList<Actions>();
         game.runMonsterPhase();
         actions = 2;
         ready = false;
@@ -204,6 +205,7 @@ public class Investigator {
         if (space.getDoom()==0 || doneActions.contains(Actions.WARD_ACTION)) {
             return false;
         } else {
+            doAction(Actions.WARD_ACTION);
             game.setCurrent_action(Actions.WARD_ACTION);
             test(lore);
             actionResult = new WardResult(this, null);

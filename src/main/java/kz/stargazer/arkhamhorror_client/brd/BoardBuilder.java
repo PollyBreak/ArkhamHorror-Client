@@ -32,7 +32,7 @@ public class BoardBuilder {
     }
     public void buildNeighborhood_Downtown(){
         Neighborhood downtown = new Neighborhood("Downtown");
-        downtown.addNode(new Node("Independance Square",NodeType.Child_Downtown));
+        downtown.addNode(new Node("Independence Square",NodeType.Child_Downtown));
         downtown.addNode(new Node("Arkham Asylum",NodeType.Child_Downtown));
         downtown.addNode(new Node("La Bella Luna",NodeType.Child_Downtown));
         downtown.deploy();
@@ -61,7 +61,7 @@ public class BoardBuilder {
         board.connectHoods("Rivertown","Easttown",6,NodeType.Street_Bridge);
         fillNodePile(board.neighborhoods.values().stream().findFirst().get().spaces.get(0),new HashSet<>());
         //
-        board.fetchNode("Independance Square").addDoom();
+        board.fetchNode("Independence Square").addDoom();
         board.fetchNode("Arkham Advertiser").addDoom();
         board.fetchNode("Velma's Dinner").addDoom();
         board.fetchNode("Black Cave").addDoom();
