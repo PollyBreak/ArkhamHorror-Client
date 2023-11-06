@@ -201,13 +201,14 @@ public class Investigator {
 //        }
     }
 
-    public void ward() {
+    public boolean ward() {
         if (space.getDoom()==0 || doneActions.contains(Actions.WARD_ACTION)) {
-            return;
+            return false;
         } else {
             game.setCurrent_action(Actions.WARD_ACTION);
             test(lore);
             actionResult = new WardResult(this, null);
+            return true;
         }
     }
 

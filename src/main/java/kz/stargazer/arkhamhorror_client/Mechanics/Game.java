@@ -50,6 +50,12 @@ public class Game implements Publisher {
     public void runMonsterPhase(){
         currentPhase = Phases.ACTION_PHASE;
         monsterPhaseLogic.runPhase(this);
+
+        ////THIS SECTION IS FOR TESTING PURPOSES ONLY
+        ///REMOVE AFTER FULL FUNCTIONALITY IMPLEMENTED
+        setUnstableSpace(this.getBoard().getNodepile().values().toArray(new Node[0])[(int)(Math.random()*this.getBoard().getNodepile().values().size())]);
+        notifyMonsters();
+        ////
     }
 
     public void finish() {

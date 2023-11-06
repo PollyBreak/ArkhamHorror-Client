@@ -6,6 +6,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import kz.stargazer.arkhamhorror_client.Heroes.Investigator;
 import kz.stargazer.arkhamhorror_client.Heroes.monsters.Monster;
@@ -36,7 +37,7 @@ public class BoardFX {
         net = gm.getBoard();
         gm.setFX(this);
     }
-    public ScrollPane build(){
+    public HBox build(){
         Group northside = createHoodTile(north_path,100,200,net.neighborhoods.get("Northside"));
         Group downtown = createHoodTile(down_path,475,200,net.neighborhoods.get("Downtown"));
         Group easttown = createHoodTile(east_path,850,200,net.neighborhoods.get("Easttown"));
@@ -66,7 +67,16 @@ public class BoardFX {
         }
         initRender();
         initDoom();
-        return pane;
+        Button wardbtn = new Button("Ward");
+        wardbtn.setOnAction(e->{
+            if(game.getPlayers().get(0).ward()){
+                destroyDoom(game.getPlayers().get(0).getSpace());
+            }
+        });
+        VBox actionbox = new VBox(wardbtn);
+        actionbox.setPrefWidth(200);
+        HBox bigbox = new HBox(pane,actionbox);
+        return bigbox;
     }
     private ImageView createSingleTile(String imgpath, int x, int y, Node link){
         int w = 300;
@@ -96,7 +106,7 @@ public class BoardFX {
         statusbox.setLayoutY(img.getLayoutY());
         statusbox.setPrefHeight(60);
         statusbox.setPrefWidth(40);
-        statusbox.setMouseTransparent(true);
+        //statusbox.setMouseTransparent(true);
         statusbox.setUserData(link);
         statusbox.setAlignment(javafx.geometry.Pos.BOTTOM_LEFT);
         elements.getChildren().add(statusbox);
@@ -127,7 +137,7 @@ public class BoardFX {
         statusboxtop.setLayoutY(top.getLayoutY()-60);
         statusboxtop.setPrefHeight(60);
         statusboxtop.setPrefWidth(40);
-        statusboxtop.setMouseTransparent(true);
+        //statusboxtop.setMouseTransparent(true);
         statusboxtop.setUserData(hood.getNodes().get(0));
         statusboxtop.setAlignment(javafx.geometry.Pos.BOTTOM_LEFT);
         elements.getChildren().add(statusboxtop);
@@ -146,7 +156,7 @@ public class BoardFX {
         statusboxmddl.setLayoutY(mddl.getLayoutY()-60);
         statusboxmddl.setPrefHeight(60);
         statusboxmddl.setPrefWidth(40);
-        statusboxmddl.setMouseTransparent(true);
+        //statusboxmddl.setMouseTransparent(true);
         statusboxmddl.setUserData(hood.getNodes().get(1));
         statusboxmddl.setAlignment(javafx.geometry.Pos.BOTTOM_LEFT);
         elements.getChildren().add(statusboxmddl);
@@ -165,7 +175,7 @@ public class BoardFX {
         statusboxlower.setLayoutY(lower.getLayoutY()-60);
         statusboxlower.setPrefHeight(60);
         statusboxlower.setPrefWidth(40);
-        statusboxlower.setMouseTransparent(true);
+        //statusboxlower.setMouseTransparent(true);
         statusboxlower.setUserData(hood.getNodes().get(2));
         statusboxlower.setAlignment(javafx.geometry.Pos.BOTTOM_LEFT);
         elements.getChildren().add(statusboxlower);
@@ -226,6 +236,15 @@ public class BoardFX {
         img.setFitHeight(60);
         img.setFitWidth(40);
         img.setUserData(monster);
+        img.setOnMouseEntered(e->{
+            img.setScaleX(4);
+            img.setScaleY(4);
+            img.toFront();
+        });
+        img.setOnMouseExited(e->{
+            img.setScaleX(1);
+            img.setScaleY(1);
+        });
         for (HBox node:
                 statusboxes.values()){
             if ((Node)node.getUserData()==destination){
@@ -237,6 +256,7 @@ public class BoardFX {
         ImageView img = new ImageView(new Image(getClass().getResource("/images/doom.png").toExternalForm()));
         img.setFitHeight(35);
         img.setFitWidth(35);
+        img.setRotate(Math.random()*180);
         img.setUserData("doom");
         for (HBox node:
                 statusboxes.values()){
