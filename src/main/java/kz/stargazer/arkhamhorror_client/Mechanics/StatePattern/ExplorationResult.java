@@ -11,7 +11,6 @@ public class ExplorationResult extends ActionResult{
         int successes = player.countSuccesses();
         player.getGame().getPlot().setClues(player.getGame().getPlot().getClues()+successes);
         player.setActionResult(nextResult);
-        player.setLastTest(new ArrayList<>());
     }
 
     public ExplorationResult(Investigator player, ActionResult nextResult) {

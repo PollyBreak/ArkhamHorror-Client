@@ -16,7 +16,6 @@ public class EvadeResult extends ActionResult{
             player.checkIfMonster();
         }
         player.setActionResult(nextResult);
-        player.setLastTest(new ArrayList<>());
     }
 
     public EvadeResult(Investigator player, ActionResult nextResult, Monster monster) {

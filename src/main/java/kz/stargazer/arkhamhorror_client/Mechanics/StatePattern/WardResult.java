@@ -22,7 +22,6 @@ public class WardResult extends ActionResult{
             player.setClues(player.getClues()+1);
         }
         player.setActionResult(nextResult);
-        player.setLastTest(new ArrayList<>());
     }
 
     public WardResult(Investigator player, ActionResult nextResult) {
