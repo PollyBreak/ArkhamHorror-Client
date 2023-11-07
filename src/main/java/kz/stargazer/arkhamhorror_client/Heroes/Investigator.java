@@ -121,6 +121,7 @@ public class Investigator {
 
 
     public ArrayList<Integer> test(int skill){
+        lastTest.clear();
         ArrayList<Integer> dices = new ArrayList<>();
         for (int i=0; i<skill; i++){
             int dice = (int)(Math.random() * 6) + 1;
@@ -212,15 +213,15 @@ public class Investigator {
 //        }
     }
 
-    public int ward() {
+    public boolean ward() {
         if (space.getDoom()==0 || doneActions.contains(Actions.WARD_ACTION)) {
-            return 0;
+            return false;
         } else {
             game.setCurrent_action(Actions.WARD_ACTION);
             test(lore);
             actionResult = new WardResult(this, null);
             doAction(Actions.WARD_ACTION);
-            return 2;
+            return true;
         }
     }
 

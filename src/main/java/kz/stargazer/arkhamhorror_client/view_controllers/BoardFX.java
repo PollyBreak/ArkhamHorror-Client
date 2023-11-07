@@ -3,6 +3,7 @@ package kz.stargazer.arkhamhorror_client.view_controllers;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
@@ -77,22 +78,30 @@ public class BoardFX {
         initRender();
         initDoom();
         //
+        Label sucess = new Label("");
+        sucess.setWrapText(true);
         Button wardbtn = new Button("Ward");
         wardbtn.setOnAction(e->{
-            int res = game.getPlayers().get(0).ward();
-            if(res>0){
-                for (int i =0;i<res;i++) destroyDoom(game.getPlayers().get(0).getSpace());
+            if (game.getPlayers().get(0).ward()){
+            int res = game.getPlayers().get(0).countSuccesses();
+            sucess.setText("While testing your lore skills you've thrown "+String.valueOf(res)+" successes!");
+            for (int i =0;i<res;i++) destroyDoom(game.getPlayers().get(0).getSpace());
             }
         });
         Button moneybtn = new Button("Gather Resources");
         moneybtn.setOnAction(e->{
             game.getPlayers().get(0).gatherMoney();
             updateStats();
+            sucess.setText("You've earned 1$!");
         });
         //
+        ImageView sheet = new ImageView(new Image(getClass().getResource("/images/daniel_sheet.jpg").toExternalForm()));
+        sheet.setFitHeight(400);
+        sheet.setFitWidth(200);
         //
-        VBox actionbox = new VBox(wardbtn,moneybtn);
-        actionbox.getChildren().add(stats);
+        stats.setMaxHeight(100);
+        VBox actionbox = new VBox(sheet,wardbtn,moneybtn,stats,sucess);
+        //actionbox.getChildren().add(sheet);
         actionbox.setPrefWidth(400);
         actionbox.setAlignment(Pos.CENTER);
         HBox bigbox = new HBox(pane,actionbox);
@@ -291,6 +300,18 @@ public class BoardFX {
             zoom.setScaleX(4);
             zoom.setScaleY(4);
             zoom.setMouseTransparent(true);
+            elements.getChildren().add(zoom);
+        });
+        img.setOnMouseClicked(e->{
+            ImageView zoom = new ImageView(new Image(getClass().getResource("/images/monsters/"+monster.getName()+"_back.jpg").toExternalForm()));
+            zoom.setFitWidth(img.getFitWidth());
+            zoom.setFitHeight(img.getFitHeight());
+            zoom.setLayoutX(img.getParent().getLayoutX());
+            zoom.setLayoutY(img.getParent().getLayoutY()+100);
+            zoom.setScaleX(4);
+            zoom.setScaleY(4);
+            zoom.setMouseTransparent(true);
+            elements.getChildren().remove(elements.getChildren().size()-1);
             elements.getChildren().add(zoom);
         });
     }
