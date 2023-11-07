@@ -329,4 +329,10 @@ public class Investigator {
     public void setActionResult(ActionResult actionResult) {
         this.actionResult = actionResult;
     }
+    public String getName(){
+        return name;
+    }
+    public int getMoney() {
+        return money;
+    }
 }
