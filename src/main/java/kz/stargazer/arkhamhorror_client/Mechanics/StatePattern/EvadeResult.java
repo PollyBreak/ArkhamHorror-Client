@@ -3,6 +3,8 @@ package kz.stargazer.arkhamhorror_client.Mechanics.StatePattern;
 import kz.stargazer.arkhamhorror_client.Heroes.Investigator;
 import kz.stargazer.arkhamhorror_client.Heroes.monsters.Monster;
 
+import java.util.ArrayList;
+
 public class EvadeResult extends ActionResult{
     private Monster monster;
 
@@ -14,6 +16,7 @@ public class EvadeResult extends ActionResult{
             player.checkIfMonster();
         }
         player.setActionResult(nextResult);
+        player.setLastTest(new ArrayList<>());
     }
 
     public EvadeResult(Investigator player, ActionResult nextResult, Monster monster) {

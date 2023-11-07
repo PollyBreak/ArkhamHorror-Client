@@ -45,6 +45,8 @@ public class Investigator {
 
     private ArrayList<Integer> lastTest = new ArrayList<>();
 
+    private ArrayList<Monster> gluedMonsters = new ArrayList<>();
+
     private Action talent;
 
     private boolean delayed;
@@ -262,6 +264,10 @@ public class Investigator {
                 }
             }
         }
+    }
+
+    public void hit(Monster monster) {
+
     }
 
     ////////////////////////////GETTERS AND SETTERS//////////
