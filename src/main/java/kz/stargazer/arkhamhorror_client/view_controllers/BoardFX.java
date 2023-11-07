@@ -3,6 +3,7 @@ package kz.stargazer.arkhamhorror_client.view_controllers;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -23,6 +24,8 @@ public class BoardFX {
     private Board net;
     private Group elements = new Group();
     private HashMap<javafx.scene.Node,HBox> statusboxes = new HashMap<>();
+    private HashMap<Neighborhood,HBox> hoodboxes = new HashMap<>();
+    private ListView<String> stats = new ListView<>();
     private final int offsetX = 200;
     private final int offsetY = 200;
     private final String north_path = "/images/tile_northside.png";
@@ -66,8 +69,14 @@ public class BoardFX {
              statusboxes.values()) {
             node.toFront();
         }
+        for (javafx.scene.Node node:
+                hoodboxes.values()) {
+            node.toFront();
+        }
+        //
         initRender();
         initDoom();
+        //
         Button wardbtn = new Button("Ward");
         wardbtn.setOnAction(e->{
             int res = game.getPlayers().get(0).ward();
@@ -78,8 +87,12 @@ public class BoardFX {
         Button moneybtn = new Button("Gather Resources");
         moneybtn.setOnAction(e->{
             game.getPlayers().get(0).gatherMoney();
+            updateStats();
         });
+        //
+        //
         VBox actionbox = new VBox(wardbtn,moneybtn);
+        actionbox.getChildren().add(stats);
         actionbox.setPrefWidth(400);
         actionbox.setAlignment(Pos.CENTER);
         HBox bigbox = new HBox(pane,actionbox);
@@ -106,6 +119,7 @@ public class BoardFX {
         img.setOnMouseClicked(e->{
             if (game.getPlayers().get(0).move((Node)img.getUserData())) {
                 renderPlayer(game.getPlayers().get(0), img);
+                updateStats();
             }
         });
         HBox statusbox = new HBox();
@@ -134,6 +148,7 @@ public class BoardFX {
         top.setOnAction(e->{
             if (game.getPlayers().get(0).move((Node)top.getUserData())) {
                 renderPlayer(game.getPlayers().get(0), top);
+                updateStats();
             }
         });
         top.setLayoutX(img.getLayoutX()+100);
@@ -153,6 +168,7 @@ public class BoardFX {
         mddl.setOnAction(e->{
             if (game.getPlayers().get(0).move((Node)mddl.getUserData())) {
                 renderPlayer(game.getPlayers().get(0), mddl);
+                updateStats();
             }
         });
         mddl.setLayoutX(img.getLayoutX()+25);
@@ -172,6 +188,7 @@ public class BoardFX {
         lower.setOnAction(e->{
             if (game.getPlayers().get(0).move((Node)lower.getUserData())) {
                 renderPlayer(game.getPlayers().get(0), lower);
+                updateStats();
             }
         });
         lower.setLayoutX(img.getLayoutX()+200);
@@ -188,6 +205,16 @@ public class BoardFX {
         elements.getChildren().add(statusboxlower);
         statusboxes.put(lower,statusboxlower);
         //
+        //  replace with stackedview
+        //
+        HBox hoodbox = new HBox();
+        hoodbox.setLayoutX(img.getLayoutX()+120);
+        hoodbox.setLayoutY(img.getLayoutY()+160);
+        hoodbox.setUserData(hood);
+        hoodbox.setAlignment(javafx.geometry.Pos.BOTTOM_LEFT);
+        elements.getChildren().add(hoodbox);
+        hoodboxes.put(hood,hoodbox);
+        //
         Group btngrp = new Group(top,mddl,lower);
         return new Group(img, btngrp);
     }
@@ -201,6 +228,7 @@ public class BoardFX {
                 }
             }
         }
+        updateStats();
         for (Monster monster:
              game.getMonsters()){
             for (HBox node:
@@ -300,5 +328,12 @@ public class BoardFX {
                 renderDoom(node);
             }
         }
+    }
+    public void updateStats(){
+        stats.getItems().clear();
+        stats.getItems().add("Name - "+game.getPlayers().get(0).getName());
+        stats.getItems().add("Health - "+String.valueOf(game.getPlayers().get(0).getHealth()));
+        stats.getItems().add("Sanity - "+String.valueOf(game.getPlayers().get(0).getSanity()));
+        stats.getItems().add("Money - "+String.valueOf(game.getPlayers().get(0).getMoney()));
     }
 }
