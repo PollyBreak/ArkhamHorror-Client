@@ -7,7 +7,9 @@ import kz.stargazer.arkhamhorror_client.Assets.Spell;
 import kz.stargazer.arkhamhorror_client.Heroes.Investigator;
 import kz.stargazer.arkhamhorror_client.Heroes.monsters.Monster;
 import kz.stargazer.arkhamhorror_client.brd.Board;
+import kz.stargazer.arkhamhorror_client.brd.Neighborhood;
 import kz.stargazer.arkhamhorror_client.brd.Node;
+import kz.stargazer.arkhamhorror_client.brd.NodeType;
 import kz.stargazer.arkhamhorror_client.view_controllers.BoardFX;
 
 import java.util.ArrayList;
@@ -30,10 +32,37 @@ public class Game implements Publisher {
     private Phases currentPhase;
 
     public void addDoom(Node node){
-        board.fetchNode(node.getName()).addDoom();
-        fx.renderDoom(node);
+        if (checkAnomaly(node.getType())){
+            fx.leaveMessage("You're now closer to defeat! Hurry!");
+        } else {
+            board.fetchNode(node.getName()).addDoom();
+            fx.renderDoom(node);
+        }
+        int doom = node.getDoom();
+        int doomsum = doom;
+        for (Node neighb:
+                node.getNeighbors()) {
+            if (neighb.getType()==node.getType()){
+                doomsum+=neighb.getDoom();
+            }
+        }
+        if ((doom>=3||doomsum>=5)&&!checkAnomaly(node.getType())){
+            beginAnomaly(node.getType());
+        }
     }
-
+    private void beginAnomaly(NodeType hood){
+        Neighborhood chood = board.getHoodOfNode(hood);
+        chood.setAnomaly(true);
+        fx.renderAnomaly(chood);
+    }
+    public boolean checkAnomaly(NodeType hood){
+        return board.getHoodOfNode(hood).hasAnomaly();
+    }
+    public void endAnomaly(NodeType hood){
+        Neighborhood chood = board.getHoodOfNode(hood);
+        chood.setAnomaly(false);
+        fx.destroyAnomaly(chood);
+    }
     @Override
     public void addMonster(Subscriber subscriber) {
         monstersSubscribers.add(subscriber);

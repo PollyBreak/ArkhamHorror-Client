@@ -12,10 +12,10 @@ public class WardResult extends ActionResult{
     public void act() {
         int successes = player.countSuccesses();
         int count = 0;
-        for (int i=0; i< player.getSpace().getDoom(); i++) {
-            if (successes >0) {
-                player.getSpace().setDoom(player.getSpace().getDoom()-1);
-                count ++;
+        for (int i=0; i< successes; i++) {
+            if (player.getSpace().getDoom() > 0){
+                player.getSpace().setDoom(player.getSpace().getDoom() - 1);
+                count++;
             }
         }
         if (count > 1) {

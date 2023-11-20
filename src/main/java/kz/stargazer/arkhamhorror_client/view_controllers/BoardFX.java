@@ -1,5 +1,8 @@
 package kz.stargazer.arkhamhorror_client.view_controllers;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
@@ -9,8 +12,10 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
+import javafx.util.Duration;
 import kz.stargazer.arkhamhorror_client.Heroes.Investigator;
 import kz.stargazer.arkhamhorror_client.Heroes.monsters.Monster;
 import kz.stargazer.arkhamhorror_client.Mechanics.Game;
@@ -25,8 +30,9 @@ public class BoardFX {
     private Board net;
     private Group elements = new Group();
     private HashMap<javafx.scene.Node,HBox> statusboxes = new HashMap<>();
-    private HashMap<Neighborhood,HBox> hoodboxes = new HashMap<>();
+    private HashMap<Neighborhood,StackPane> hoodboxes = new HashMap<>();
     private ListView<String> stats = new ListView<>();
+    private Label messageline;
     private final int offsetX = 200;
     private final int offsetY = 200;
     private final String north_path = "/images/tile_northside.png";
@@ -43,24 +49,12 @@ public class BoardFX {
         gm.setFX(this);
     }
     public HBox build(){
-        Group northside = createHoodTile(north_path,100,200,net.neighborhoods.get("Northside"));
-        Group downtown = createHoodTile(down_path,475,200,net.neighborhoods.get("Downtown"));
-        Group easttown = createHoodTile(east_path,850,200,net.neighborhoods.get("Easttown"));
-        Group merchant = createHoodTile(merch_path,280,490,net.neighborhoods.get("Merchant District"));
-        Group rivertown = createHoodTile(river_path,655,490,net.neighborhoods.get("Rivertown"));
-        ImageView st1 = createSingleTile("Street",375,300, net.fetchNode("Street from Northside to Downtown"));
-        ImageView st2 = createSingleTile("Street",750,300, net.fetchNode("Street from Downtown to Easttown"));
-        ImageView st3 = createSingleTile("Street",275,430, net.fetchNode("Street from Merchant District to Northside"));
-        st3.setRotate(45);
-        ImageView st4 = createSingleTile("Street",450,430, net.fetchNode("Street from Merchant District to Downtown"));
-        st4.setRotate(135);
-        ImageView st5 = createSingleTile("Street",650,430, net.fetchNode("Street from Downtown to Rivertown"));
-        st5.setRotate(45);
-        ImageView st6 = createSingleTile("Street",850,430, net.fetchNode("Street from Rivertown to Easttown"));
-        st6.setRotate(135);
-        ImageView st7 = createSingleTile("Street",555,580, net.fetchNode("Street from Merchant District to Rivertown"));
-        Group biggroup = new Group(st1,st2,st3,st4,st5,st6,st7,northside,downtown,easttown,merchant,rivertown);
+        Group biggroup = new Group();
+        switch (net.getScenario()){
+            case ("Azatoth") -> biggroup = buildBase_Azathoth();
+        }
         elements.getChildren().add(biggroup);
+        //
         ScrollPane pane = new ScrollPane(elements);
         pane.setPrefSize(Screen.getPrimary().getVisualBounds().getWidth(),Screen.getPrimary().getVisualBounds().getHeight());
         pane.setPannable(true);
@@ -78,34 +72,56 @@ public class BoardFX {
         initRender();
         initDoom();
         //
-        Label sucess = new Label("");
-        sucess.setWrapText(true);
+        HBox bigbox = new HBox(pane,buildActionbox());
+        return bigbox;
+    }
+    private Group buildBase_Azathoth(){
+        Group northside = createHoodTile(north_path,100,200,net.neighborhoods.get("Northside"));
+        Group downtown = createHoodTile(down_path,475,200,net.neighborhoods.get("Downtown"));
+        Group easttown = createHoodTile(east_path,850,200,net.neighborhoods.get("Easttown"));
+        Group merchant = createHoodTile(merch_path,280,490,net.neighborhoods.get("Merchant District"));
+        Group rivertown = createHoodTile(river_path,655,490,net.neighborhoods.get("Rivertown"));
+        ImageView st1 = createSingleTile("Street",375,300, net.fetchNode("Street from Northside to Downtown"));
+        ImageView st2 = createSingleTile("Street",750,300, net.fetchNode("Street from Downtown to Easttown"));
+        ImageView st3 = createSingleTile("Street",275,430, net.fetchNode("Street from Merchant District to Northside"));
+        st3.setRotate(45);
+        ImageView st4 = createSingleTile("Street",450,430, net.fetchNode("Street from Merchant District to Downtown"));
+        st4.setRotate(135);
+        ImageView st5 = createSingleTile("Street",650,430, net.fetchNode("Street from Downtown to Rivertown"));
+        st5.setRotate(45);
+        ImageView st6 = createSingleTile("Street",850,430, net.fetchNode("Street from Rivertown to Easttown"));
+        st6.setRotate(135);
+        ImageView st7 = createSingleTile("Street",555,580, net.fetchNode("Street from Merchant District to Rivertown"));
+        return new Group(st1,st2,st3,st4,st5,st6,st7,northside,downtown,easttown,merchant,rivertown);
+    }
+    private VBox buildActionbox(){
+        messageline = new Label("");
+        messageline.setWrapText(true);
         Button wardbtn = new Button("Ward");
         wardbtn.setOnAction(e->{
             if (game.getPlayers().get(0).ward()){
-            int res = game.getPlayers().get(0).countSuccesses();
-            sucess.setText("While testing your lore skills you've thrown "+String.valueOf(res)+" successes!");
-            for (int i =0;i<res;i++) destroyDoom(game.getPlayers().get(0).getSpace());
+                int res = game.getPlayers().get(0).countSuccesses();
+                messageline.setText("While testing your lore skills you've thrown "+String.valueOf(res)+" successes!");
+                for (int i =0;i<res;i++) {
+                    destroyDoom(game.getPlayers().get(0).getSpace());
+                }
             }
         });
         Button moneybtn = new Button("Gather Resources");
         moneybtn.setOnAction(e->{
             game.getPlayers().get(0).gatherMoney();
             updateStats();
-            sucess.setText("You've earned 1$!");
+            messageline.setText("You've earned 1$!");
         });
         //
         ImageView sheet = new ImageView(new Image(getClass().getResource("/images/daniel_sheet.jpg").toExternalForm()));
         sheet.setFitHeight(400);
         sheet.setFitWidth(200);
-        //
         stats.setMaxHeight(100);
-        VBox actionbox = new VBox(sheet,wardbtn,moneybtn,stats,sucess);
-        //actionbox.getChildren().add(sheet);
-        actionbox.setPrefWidth(400);
-        actionbox.setAlignment(Pos.CENTER);
-        HBox bigbox = new HBox(pane,actionbox);
-        return bigbox;
+        VBox box = new VBox(sheet,wardbtn,moneybtn,stats,messageline);
+        box.setPrefWidth(400);
+        box.setAlignment(Pos.CENTER);
+        return box;
     }
     private ImageView createSingleTile(String imgpath, int x, int y, Node link){
         int w = 300;
@@ -131,16 +147,9 @@ public class BoardFX {
                 updateStats();
             }
         });
-        HBox statusbox = new HBox();
-        statusbox.setLayoutX(img.getLayoutX()+40);
-        statusbox.setLayoutY(img.getLayoutY());
-//        statusbox.setPrefHeight(60);
-//        statusbox.setPrefWidth(40);
-        //statusbox.setMouseTransparent(true);
-        statusbox.setUserData(link);
-        statusbox.setAlignment(javafx.geometry.Pos.BOTTOM_LEFT);
-        elements.getChildren().add(statusbox);
-        statusboxes.put(img,statusbox);
+        //
+        createNodeStatbox(img,40,0);
+        //
         return img;
     }
     private Group createHoodTile(String imgpath, int x, int y, Neighborhood hood){
@@ -149,83 +158,51 @@ public class BoardFX {
         img.setFitHeight(300);
         img.setLayoutX(x);
         img.setLayoutY(y);
-        elements.getChildren().add(img);
         //
-        Button top = new Button(hood.getNodes().get(0).getName());
-        Button mddl = new Button(hood.getNodes().get(1).getName());
-        Button lower = new Button(hood.getNodes().get(2).getName());
-        top.setOnAction(e->{
-            if (game.getPlayers().get(0).move((Node)top.getUserData())) {
-                renderPlayer(game.getPlayers().get(0), top);
-                updateStats();
-            }
-        });
-        top.setLayoutX(img.getLayoutX()+100);
-        top.setLayoutY(img.getLayoutY()+100);
-        top.setUserData(hood.getNodes().get(0));
-        HBox statusboxtop = new HBox();
-        statusboxtop.setLayoutX(top.getLayoutX()+20);
-        statusboxtop.setLayoutY(top.getLayoutY()-60);
-//        statusboxtop.setPrefHeight(60);
-//        statusboxtop.setPrefWidth(40);
-        //statusboxtop.setMouseTransparent(true);
-        statusboxtop.setUserData(hood.getNodes().get(0));
-        statusboxtop.setAlignment(javafx.geometry.Pos.BOTTOM_LEFT);
-        elements.getChildren().add(statusboxtop);
-        statusboxes.put(top,statusboxtop);
+        Button top = createHoodNodeInteraction(img.getLayoutX()+100,img.getLayoutY()+100,hood.getNodes().get(0));
+        Button mddl = createHoodNodeInteraction(img.getLayoutX()+25,img.getLayoutY()+200,hood.getNodes().get(1));
+        Button lower = createHoodNodeInteraction(img.getLayoutX()+200,img.getLayoutY()+200,hood.getNodes().get(1));
+        createNodeStatbox(top,20,-60);
+        createNodeStatbox(mddl,20,-60);
+        createNodeStatbox(lower,20,-60);
         //
-        mddl.setOnAction(e->{
-            if (game.getPlayers().get(0).move((Node)mddl.getUserData())) {
-                renderPlayer(game.getPlayers().get(0), mddl);
-                updateStats();
-            }
-        });
-        mddl.setLayoutX(img.getLayoutX()+25);
-        mddl.setLayoutY(img.getLayoutY()+200);
-        mddl.setUserData(hood.getNodes().get(1));
-        HBox statusboxmddl = new HBox();
-        statusboxmddl.setLayoutX(mddl.getLayoutX()+20);
-        statusboxmddl.setLayoutY(mddl.getLayoutY()-60);
-//        statusboxmddl.setPrefHeight(60);
-//        statusboxmddl.setPrefWidth(40);
-        //statusboxmddl.setMouseTransparent(true);
-        statusboxmddl.setUserData(hood.getNodes().get(1));
-        statusboxmddl.setAlignment(javafx.geometry.Pos.BOTTOM_LEFT);
-        elements.getChildren().add(statusboxmddl);
-        statusboxes.put(mddl,statusboxmddl);
-        //
-        lower.setOnAction(e->{
-            if (game.getPlayers().get(0).move((Node)lower.getUserData())) {
-                renderPlayer(game.getPlayers().get(0), lower);
-                updateStats();
-            }
-        });
-        lower.setLayoutX(img.getLayoutX()+200);
-        lower.setLayoutY(img.getLayoutY()+200);
-        lower.setUserData(hood.getNodes().get(2));
-        HBox statusboxlower = new HBox();
-        statusboxlower.setLayoutX(lower.getLayoutX()+20);
-        statusboxlower.setLayoutY(lower.getLayoutY()-60);
-//        statusboxlower.setPrefHeight(60);
-//        statusboxlower.setPrefWidth(40);
-        //statusboxlower.setMouseTransparent(true);
-        statusboxlower.setUserData(hood.getNodes().get(2));
-        statusboxlower.setAlignment(javafx.geometry.Pos.BOTTOM_LEFT);
-        elements.getChildren().add(statusboxlower);
-        statusboxes.put(lower,statusboxlower);
-        //
-        //  replace with stackedview
-        //
-        HBox hoodbox = new HBox();
-        hoodbox.setLayoutX(img.getLayoutX()+120);
-        hoodbox.setLayoutY(img.getLayoutY()+160);
-        hoodbox.setUserData(hood);
-        hoodbox.setAlignment(javafx.geometry.Pos.BOTTOM_LEFT);
-        elements.getChildren().add(hoodbox);
-        hoodboxes.put(hood,hoodbox);
+        createHoodStatbox(img.getLayoutX()+120,img.getLayoutY()+150,hood);
         //
         Group btngrp = new Group(top,mddl,lower);
         return new Group(img, btngrp);
+    }
+
+    private void createNodeStatbox(javafx.scene.Node anchor,double offsetX,double offsetY){
+        HBox statusbox = new HBox();
+        statusbox.setLayoutX(anchor.getLayoutX()+offsetX);
+        statusbox.setLayoutY(anchor.getLayoutY()+offsetY);
+        statusbox.setUserData(anchor.getUserData());
+        statusbox.setAlignment(javafx.geometry.Pos.BOTTOM_LEFT);
+        elements.getChildren().add(statusbox);
+        statusboxes.put(anchor,statusbox);
+    }
+    private void createHoodStatbox(double x, double y,Neighborhood anchor){
+        StackPane hoodbox = new StackPane();
+        hoodbox.setAlignment(Pos.TOP_LEFT);
+        hoodbox.setMouseTransparent(true);
+        hoodbox.setLayoutX(x);
+        hoodbox.setLayoutY(y);
+        hoodbox.setUserData(anchor);
+        elements.getChildren().add(hoodbox);
+        hoodboxes.put(anchor,hoodbox);
+    }
+    private Button createHoodNodeInteraction(double x, double y, Node node){
+        Button btn = new Button(node.getName());
+        btn.setOnAction(e->{
+            if (game.getPlayers().get(0).move((Node)btn.getUserData())) {
+                renderPlayer(game.getPlayers().get(0), btn);
+                updateStats();
+            }
+        });
+        btn.setLayoutX(x);
+        btn.setLayoutY(y);
+        btn.setUserData(node);
+        return btn;
     }
     private void initRender(){
         for (Investigator player:
@@ -280,17 +257,18 @@ public class BoardFX {
         img.setFitHeight(60);
         img.setFitWidth(40);
         img.setUserData(monster);
-        img.setOnMouseExited(e->{
-            //img.setScaleX(1);
-            //img.setScaleY(1);
-            elements.getChildren().remove(elements.getChildren().size()-1);
-        });
         for (HBox node:
                 statusboxes.values()){
             if ((Node)node.getUserData()==destination){
                 node.getChildren().add(img);
             }
         }
+        //
+        //ZOOM/CLICK EVENTS
+        //
+        img.setOnMouseExited(e->{
+            elements.getChildren().remove(elements.getChildren().size()-1);
+        });
         img.setOnMouseEntered(e->{
             ImageView zoom = new ImageView(img.getImage());
             zoom.setFitWidth(img.getFitWidth());
@@ -350,11 +328,71 @@ public class BoardFX {
             }
         }
     }
+    public void renderClue(Neighborhood hood){
+        int dynamicOffsetX = 15;
+        int dymanicOffsetY = -10;
+        ImageView img = new ImageView(new Image(getClass().getResource("/images/doom.png").toExternalForm()));
+        img.setFitHeight(35);
+        img.setFitWidth(35);
+        img.setRotate(Math.random()*180);
+        img.setUserData("clue");
+        for (StackPane node:
+                hoodboxes.values()){
+            if (node.getUserData()==hood){
+                node.getChildren().add(img);
+                if (node.getChildren().size() > 1) {
+                    if((node.getChildren().size()-1)%3==0){
+                        StackPane.setMargin(img, new Insets(node.getChildren().size()*-4, 0, 0, node.getChildren().size()*-4));
+                        continue;
+                    }
+                    int lastIndex = node.getChildren().size() - 2;
+                    double lastX = StackPane.getMargin(node.getChildren().get(lastIndex)).getLeft();
+                    double lastY = StackPane.getMargin(node.getChildren().get(lastIndex)).getTop();
+                    StackPane.setMargin(img, new javafx.geometry.Insets(lastY + dymanicOffsetY, 0, 0, lastX + dynamicOffsetX));
+                }else {
+                    StackPane.setMargin(img, new Insets(0, 0, 0, 0));
+                }
+            }
+        }
+    }
+    public void renderAnomaly(Neighborhood hood){
+        ImageView img = new ImageView(new Image(getClass().getResource("/images/doom.png").toExternalForm()));
+        img.setFitHeight(120);
+        img.setFitWidth(120);
+        img.setRotate(Math.random()*180);
+        img.setUserData("anomaly");
+        for (StackPane node:
+                hoodboxes.values()) {
+            if (node.getUserData() == hood) {
+                node.getChildren().add(img);
+                StackPane.setMargin(img, new Insets(-60, 0, 0, -40));
+                img.toBack();
+                break;
+            }
+        }
+    }
+    public void destroyAnomaly(Neighborhood hood){
+        for (StackPane node:
+                hoodboxes.values()){
+            if (node.getUserData()==hood){
+                for (javafx.scene.Node image:
+                        node.getChildren()) {
+                    if (image.getUserData() == "anomaly"){
+                        node.getChildren().remove(image);
+                        break;
+                    }
+                }
+            }
+        }
+    }
     public void updateStats(){
         stats.getItems().clear();
         stats.getItems().add("Name - "+game.getPlayers().get(0).getName());
         stats.getItems().add("Health - "+String.valueOf(game.getPlayers().get(0).getHealth()));
         stats.getItems().add("Sanity - "+String.valueOf(game.getPlayers().get(0).getSanity()));
         stats.getItems().add("Money - "+String.valueOf(game.getPlayers().get(0).getMoney()));
+    }
+    public void leaveMessage(String msg){
+        messageline.setText(msg);
     }
 }

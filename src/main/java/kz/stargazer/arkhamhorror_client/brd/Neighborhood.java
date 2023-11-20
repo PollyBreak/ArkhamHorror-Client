@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Neighborhood {
     ArrayList<Node> spaces = new ArrayList<>();
     String name;
-    boolean anomaly = false;
+    private boolean anomaly = false;
     boolean leftOrientation = false; //topmost space may be on the right and on the left of a tile
     int clues;
     Neighborhood(String name){
@@ -62,5 +62,12 @@ public class Neighborhood {
     }
     public ArrayList<Node> getNodes(){
         return spaces;
+    }
+
+    public void setAnomaly(boolean anomaly) {
+        this.anomaly = anomaly;
+    }
+    public boolean hasAnomaly() {
+        return anomaly;
     }
 }

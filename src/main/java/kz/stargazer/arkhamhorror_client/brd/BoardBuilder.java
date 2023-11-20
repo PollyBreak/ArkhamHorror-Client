@@ -67,7 +67,7 @@ public class BoardBuilder {
         board.fetchNode("Black Cave").addDoom();
         board.fetchNode("Unvisited Island").addDoom();
         //
-
+        board.setScenario("Azatoth");
         return board;
     }
     public Board build(String scenario){

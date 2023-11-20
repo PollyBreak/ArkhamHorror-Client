@@ -220,6 +220,22 @@ public class Investigator {
             game.setCurrent_action(Actions.WARD_ACTION);
             test(lore);
             actionResult = new WardResult(this, null);
+            actionResult.act();
+            //
+            // remove anomaly on full clear
+            if (game.checkAnomaly(space.getType())) {
+                int doomsum = space.getDoom();
+                for (Node neighb :
+                        space.getNeighbors()) {
+                    if (neighb.getType() == space.getType()) {
+                        doomsum += neighb.getDoom();
+                    }
+                }
+                if (doomsum==0){
+                    game.endAnomaly(space.getType());
+                }
+            }
+            //
             doAction(Actions.WARD_ACTION);
             return true;
         }
