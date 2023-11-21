@@ -13,6 +13,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.util.Duration;
+import kz.stargazer.arkhamhorror_client.Assets.Actions;
 import kz.stargazer.arkhamhorror_client.Heroes.Investigator;
 import kz.stargazer.arkhamhorror_client.Heroes.monsters.Monster;
 import kz.stargazer.arkhamhorror_client.Mechanics.Game;
@@ -115,12 +116,28 @@ public class BoardFX {
             updateStats();
             messageline.setText("You've earned 1$!");
         });
+        Button finish = new Button("Finish test");
+        finish.setOnAction(e->{
+            game.getPlayers().get(0).finishTest();
+            updateStats();
+        });
         //
         ImageView sheet = new ImageView(new Image(getClass().getResource("/images/daniel_sheet.jpg").toExternalForm()));
-        sheet.setFitHeight(400);
-        sheet.setFitWidth(200);
+        sheet.setFitHeight(300);
+        sheet.setFitWidth(150);
         stats.setMaxHeight(100);
-        VBox box = new VBox(sheet,wardbtn,moneybtn,stats,messageline);
+        Label inv = new Label("Inventory:");
+        ImageView sg = new ImageView(new Image(getClass().getResource("/images/item_shotgun.jpg").toExternalForm()));
+        sg.setFitHeight(120);
+        sg.setFitWidth(80);
+        sg.setOnMouseClicked(e->{
+            Investigator player = game.getPlayers().get(0);
+            if (game.getCurrent_action() == Actions.ATTACK_ACTION && player.getFreeHands()!=0) {
+                game.getPlayers().get(0).getAssets().getItems().get(0).use(game.getPlayers().get(0));
+                leaveMessage("Shotgun has been used! +5 strength and 6s are double success!");
+            }
+        });
+        VBox box = new VBox(sheet,wardbtn,moneybtn,finish,stats,messageline,inv,sg);
         box.setPrefWidth(400);
         box.setAlignment(Pos.CENTER);
         return box;
@@ -193,7 +210,6 @@ public class BoardFX {
         hoodbox.setUserData(anchor);
         elements.getChildren().add(hoodbox);
         hoodboxes.put(anchor,hoodbox);
-
     }
     private Button createHoodNodeInteraction(double x, double y, Node node){
         Button btn = new Button(node.getName());
@@ -316,6 +332,9 @@ public class BoardFX {
         img.setOnMouseEntered(e->{
             img.setImage(new Image(getClass().getResource("/images/monsters/"+monster.getName()+"_back.jpg").toExternalForm()));
             img.setOnMouseClicked(ex->{
+                if (game.getCurrent_action() != Actions.ATTACK_ACTION && !game.getPlayers().get(0).getDoneActions().contains(Actions.ATTACK_ACTION)) {
+                    leaveMessage("You are about to hit " + ((Monster) img.getUserData()).getName());
+                }
                 game.getPlayers().get(0).hit((Monster)img.getUserData());
             });
         });

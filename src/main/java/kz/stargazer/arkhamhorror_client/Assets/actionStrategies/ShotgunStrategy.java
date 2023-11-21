@@ -10,6 +10,7 @@ public class ShotgunStrategy implements Action {
 
     @Override
     public void use(Investigator investigator) {
+        investigator.setFreeHands(0);
         investigator.test(damage);
         int countExtra = 0;
         for (int i=0; i<investigator.getLastTest().size(); i++){

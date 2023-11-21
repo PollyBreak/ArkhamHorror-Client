@@ -328,9 +328,15 @@ public class Investigator {
     }
 
     public void finishTest() {
-        actionResult.act();
-        if (game.getCurrentPhase() == Phases.ACTION_PHASE) {
-            doAction(game.getCurrent_action());
+        if (actionResult!=null) {
+            actionResult.act();
+            checkIfMonster();
+            if (game.getCurrentPhase() == Phases.ACTION_PHASE) {
+                doAction(game.getCurrent_action());
+            }
+            lastTest.clear();
+            game.setCurrent_action(null);
+            restoreHands();
         }
     }
 
@@ -359,16 +365,18 @@ public class Investigator {
     }
 
     public void hit(Monster monster) {
-        game.setCurrent_action(Actions.ATTACK_ACTION);
-        actionResult = new AttackResult(this, null, monster);
-        test(strength);
-        if (!assets.getItems().isEmpty()){
-            assets.getItems().get(0).use(this);
+        if (!doneActions.contains(Actions.ATTACK_ACTION) && game.getCurrent_action()!=Actions.ATTACK_ACTION) {
+            game.setCurrent_action(Actions.ATTACK_ACTION);
+            actionResult = new AttackResult(this, null, monster);
+            test(strength);
+//            if (!assets.getItems().isEmpty()) {
+//                assets.getItems().get(0).use(this);
+//            }
+            //actionResult.act();
+            //doAction(Actions.ATTACK_ACTION);
+            //checkIfMonster();
+            //lastTest.clear();
         }
-        actionResult.act();
-        doAction(Actions.ATTACK_ACTION);
-        checkIfMonster();
-        lastTest.clear();
     }
 
     ////////////////////////////GETTERS AND SETTERS//////////
@@ -469,5 +477,19 @@ public class Investigator {
 
     public void setAssets(Assets assets) {
         this.assets = assets;
+    }
+
+    public void setFreeHands(int freeHands) {
+        this.freeHands = freeHands;
+    }
+    public void restoreHands(){
+        this.freeHands = 2;
+    }
+    public int getFreeHands() {
+        return freeHands;
+    }
+
+    public ArrayList<Actions> getDoneActions() {
+        return doneActions;
     }
 }
