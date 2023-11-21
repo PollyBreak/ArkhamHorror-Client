@@ -51,6 +51,8 @@ public abstract class Monster implements Subscriber {
         if (!space.getHeroes().isEmpty()){
             this.engaged = true;
             this.goal = space.getHeroes().get(0);
+            space.getHeroes().get(0).setWithMonsters(true);
+            space.getHeroes().get(0).addGluedMonster(this);
         } else {
             this.engaged = false;
             this.goal = null;
@@ -62,6 +64,7 @@ public abstract class Monster implements Subscriber {
             exhausted = false;
             checkEngaged();
         } else {
+            checkEngaged();
             if (engaged) {
                 hit(goal);
             } else {
@@ -71,18 +74,31 @@ public abstract class Monster implements Subscriber {
     }
 
     public void move(Node targetNode) {
-        List<Node> path = findPathWithinDistance(space, targetNode, 2);
+        List<Node> path = findPathWithinDistance(space, targetNode);
         if (path != null && !path.isEmpty()) {
-            space.removeMonster(this);
-            space = path.get(Math.min(2, path.size() - 1));
-            path.get(Math.min(2, path.size() - 1)).addMonster(this);
-            game.getFX().renderMonster(this,this.space);
+            int maxDistance = 0;
+            for (Node node:
+                 path) {
+                if (maxDistance>2){
+                    break;
+                }
+                space.removeMonster(this);
+                space = node;
+                node.addMonster(this);
+                game.getFX().renderMonster(this,this.space);
+                checkEngaged();
+                if (this.engaged){
+                    game.getFX().placeMonsterToHand(this);
+                    break;
+                }
+                maxDistance++;
+            }
         } else {
             System.out.println("No valid path within 2 nodes to the target.");
         }
     }
 
-    private List<Node> findPathWithinDistance(Node start, Node target, int maxDistance) {
+    private List<Node> findPathWithinDistance(Node start, Node target) {
         Queue<Node> queue = new LinkedList<>();
         Map<Node, Node> parentMap = new HashMap<>();
         Set<Node> visited = new HashSet<>();
@@ -145,5 +161,16 @@ public abstract class Monster implements Subscriber {
     }
     public String getName() {
         return name;
+    }
+
+    public void setGoal(Investigator goal) {
+        this.goal = goal;
+    }
+
+    public Investigator getGoal() {
+        return goal;
+    }
+    public int getHealth() {
+        return health;
     }
 }

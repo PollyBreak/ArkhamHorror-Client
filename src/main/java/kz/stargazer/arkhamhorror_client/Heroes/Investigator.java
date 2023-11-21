@@ -1,5 +1,6 @@
 package kz.stargazer.arkhamhorror_client.Heroes;
 
+import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import kz.stargazer.arkhamhorror_client.Assets.Action;
@@ -55,6 +56,7 @@ public class Investigator {
     private boolean ready;
     private boolean alive;
     private ActionResult actionResult;
+    private int TEMP_true_successes;
 
     public Investigator(InvestigatorBuilder investigatorBuilder){
         this.game = investigatorBuilder.getGame();
@@ -105,6 +107,7 @@ public class Investigator {
 
 
     private void doAction(Actions action) {
+        game.getFX().updateStats();
         doneActions.add(action);
         actions--;
         if (actions == 0 || ready) {
@@ -137,57 +140,27 @@ public class Investigator {
             game.finish();
         }
     }
-
-    public boolean move(Node destination) {
-//        if (doneActions.contains(Actions.MOVE_ACTION)) {
-//            return false;
-//        } else {
-            int maxDistance = 4;
-            Queue<Node> queue = new LinkedList<>();
-            queue.add(getSpace());
-            int distance = 0;
-            boolean found = false;
-            HashSet<Node> visitedNodes = new HashSet<>();
-            visitedNodes.add(space);
-
-            while (!queue.isEmpty() && distance <= maxDistance) {
-                int nodesAtCurrentLevel = queue.size();
-                distance++;
-
-                for (int i = 0; i < nodesAtCurrentLevel; i++) {
-                    Node node = queue.poll();
-
-                    if (node == destination) {
-                        found = true;
-                        break;
-                    }
-
-                    for (Node neighbor : node.getNeighbors()) {
-                        if (!visitedNodes.contains(neighbor)) {
-                            visitedNodes.add(neighbor);
-                            queue.add(neighbor);
-                        }
-                    }
-                }
-                if (found) {
-                    break;
-                }
-            }
-            if (found) {
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Do you want to spend "+String.valueOf(distance-3)+"$ to move? (You have "+String.valueOf(money)+")",ButtonType.OK,ButtonType.NO);
-                AtomicBoolean respond = new AtomicBoolean(true);
-                if (distance>3) {
-                    int finalDistance = distance;
-                    alert.showAndWait().ifPresent(response -> {
+    public boolean moveWithMoney(int requested, Node destination) {
+        String alertmsg = "Do you want to spend " + String.valueOf(requested) + "$ to move? (You have " + String.valueOf(money) + ")";
+        if (requested<1) {
+            requested = 0;
+            alertmsg = "There is a monster ahead! Prepare to fight!";
+        }
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, alertmsg, ButtonType.OK, ButtonType.NO);
+        AtomicBoolean respond = new AtomicBoolean(true);
+        int finalRequested = requested;
+        alert.showAndWait().ifPresent(response -> {
                         if (response.equals(ButtonType.OK)) {
-                            if (money>=finalDistance-3) {
-                                money-=finalDistance-3;
-                                space.removePlayer(this);
-                                space = destination;
-                                destination.addPlayer(this);
-                                checkIfMonster();
-                                respond.set(true);
-                                doAction(Actions.MOVE_ACTION);
+                            if (money>= finalRequested) {
+                                if (destination==null){
+                                    respond.set(true);
+                                } else {
+                                    money -= finalRequested;
+                                    space.removePlayer(this);
+                                    space = destination;
+                                    destination.addPlayer(this);
+                                    respond.set(true);
+                                }
                             } else {
                                 Alert alert_reject = new Alert(Alert.AlertType.ERROR,"You do not have enough cash.", ButtonType.CLOSE);
                                 alert_reject.show();
@@ -197,20 +170,157 @@ public class Investigator {
                             respond.set(false);
                         }
                     });
-                } else {
-                    space.removePlayer(this);
-                    space = destination;
-                    checkIfMonster();
-                    destination.addPlayer(this);
-                    doAction(Actions.MOVE_ACTION);
-                }
-                return respond.get();
-            } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR,"The destination is too far.", ButtonType.CLOSE);
-                alert.show();
-                return false;
+        return respond.get();
+    }
+    public Node move(Node destination){
+//        if (doneActions.contains(Actions.MOVE_ACTION)) {
+//            return false;
+//        } else {
+        if (withMonsters) {
+            return null;
+        } else {
+            int distance = 0;
+            boolean found = false;
+            List<Node> path = findPathWithinDistance(space, destination, 4);
+            if (path != null && !path.isEmpty()) {
+                found = true;
+                distance = path.size()-1;
             }
+            if (found && distance < 3) {
+                for (Node node :
+                        path) {
+                    space.removePlayer(this);
+                    space = node;
+                    node.addPlayer(this);
+                    checkIfMonster();
+                    if (this.withMonsters) {
+                        for (Monster monster:
+                                node.getMonsters()) {
+                            game.getFX().placeMonsterToHand(monster);
+                            monster.setEngaged(true);
+                            monster.setGoal(this);
+                        }
+                        doAction(Actions.MOVE_ACTION);
+                        return node;
+                    }
+                }
+                doAction(Actions.MOVE_ACTION);
+                return destination;
+            } else
+            if (found && distance<5) {
+                int livedistance = -1;
+                boolean result = false;
+                for (Node node:
+                    path) {
+                    result = false;
+                    livedistance++;
+                    if (!node.getMonsters().isEmpty()){
+                        result = moveWithMoney(livedistance-2,null);
+                        if (result) {
+                            space.removePlayer(this);
+                            space = node;
+                            node.addPlayer(this);
+                            withMonsters = true;
+                            for (Monster monster:
+                                 node.getMonsters()) {
+                                game.getFX().placeMonsterToHand(monster);
+                                monster.setEngaged(true);
+                                monster.setGoal(this);
+                            }
+                            doAction(Actions.MOVE_ACTION);
+                            return node;
+                        }
+                        else withMonsters = false;
+                        return null;
+                    }
+                }
+                result = moveWithMoney(livedistance-2,destination);
+                if (result) {
+                    doAction(Actions.MOVE_ACTION);
+                    return destination;
+                }
+                return null;
+            }
+            else {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "The destination is too far.", ButtonType.CLOSE);
+                alert.show();
+                return null;
+            }
+//            if (found) {
+//                Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Do you want to spend "+String.valueOf(distance-3)+"$ to move? (You have "+String.valueOf(money)+")",ButtonType.OK,ButtonType.NO);
+//                AtomicBoolean respond = new AtomicBoolean(true);
+//                if (distance>3) {
+//                    int finalDistance = distance;
+//                    alert.showAndWait().ifPresent(response -> {
+//                        if (response.equals(ButtonType.OK)) {
+//                            if (money>=finalDistance-3) {
+//                                money-=finalDistance-3;
+//                                space.removePlayer(this);
+//                                space = destination;
+//                                destination.addPlayer(this);
+//                                checkIfMonster();
+//                                respond.set(true);
+//                                doAction(Actions.MOVE_ACTION);
+//                            } else {
+//                                Alert alert_reject = new Alert(Alert.AlertType.ERROR,"You do not have enough cash.", ButtonType.CLOSE);
+//                                alert_reject.show();
+//                                respond.set(false);
+//                            }
+//                        } else {
+//                            respond.set(false);
+//                        }
+//                    });
+//                } else {
+//                    space.removePlayer(this);
+//                    space = destination;
+//                    checkIfMonster();
+//                    destination.addPlayer(this);
+//                    doAction(Actions.MOVE_ACTION);
+//                }
+//                return respond.get();
+//            } else {
+//                Alert alert = new Alert(Alert.AlertType.ERROR,"The destination is too far.", ButtonType.CLOSE);
+//                alert.show();
+//                return false;
+//            }
 //        }
+        }
+    }
+
+    private List<Node> findPathWithinDistance(Node start, Node target, int maxDistance) {
+        Queue<Node> queue = new LinkedList<>();
+        Map<Node, Node> parentMap = new HashMap<>();
+        Set<Node> visited = new HashSet<>();
+
+        queue.add(start);
+        visited.add(start);
+
+        while (!queue.isEmpty()) {
+            Node current = queue.poll();
+
+            if (current.equals(target)) {
+                return buildPath(parentMap, target);
+            }
+            for (Node neighbor : current.getNeighbors()) {
+                if (!visited.contains(neighbor)) {
+                    queue.add(neighbor);
+                    visited.add(neighbor);
+                    parentMap.put(neighbor, current);
+                }
+            }
+        }
+        return null;
+    }
+
+    private List<Node> buildPath(Map<Node, Node> parentMap, Node target) {
+        List<Node> path = new ArrayList<>();
+        Node current = target;
+        while (current != null) {
+            path.add(current);
+            current = parentMap.get(current);
+        }
+        Collections.reverse(path);
+        return path;
     }
 
     public boolean ward() {
@@ -276,8 +386,9 @@ public class Investigator {
         }
         else {
             for (Monster monster:space.getMonsters()){
-                if (!(monster.isEngaged())&&!(monster.isExhausted())){
+                if (!monster.isEngaged()&&!monster.isExhausted()){
                     withMonsters = true;
+                    break;
                 }
             }
         }
@@ -357,5 +468,17 @@ public class Investigator {
     }
     public int getMoney() {
         return money;
+    }
+    public void setTEMP_true_successes(int TEMP_true_successes) {
+        this.TEMP_true_successes = TEMP_true_successes;
+    }
+    public int getTEMP_true_successes() {
+        return TEMP_true_successes;
+    }
+    public void addGluedMonster(Monster monster){
+        this.gluedMonsters.add(monster);
+    }
+    public void removeGluedMonster(Monster monster){
+        this.gluedMonsters.remove(monster);
     }
 }

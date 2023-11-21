@@ -5,10 +5,7 @@ import javafx.animation.Timeline;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -24,6 +21,7 @@ import kz.stargazer.arkhamhorror_client.brd.Neighborhood;
 import kz.stargazer.arkhamhorror_client.brd.Node;
 
 import java.util.HashMap;
+import java.util.function.UnaryOperator;
 
 public class BoardFX {
     private Game game;
@@ -33,6 +31,7 @@ public class BoardFX {
     private HashMap<Neighborhood,StackPane> hoodboxes = new HashMap<>();
     private ListView<String> stats = new ListView<>();
     private Label messageline;
+    private HBox monsterhand = new HBox();
     private final int offsetX = 200;
     private final int offsetY = 200;
     private final String north_path = "/images/tile_northside.png";
@@ -54,6 +53,9 @@ public class BoardFX {
             case ("Azatoth") -> biggroup = buildBase_Azathoth();
         }
         elements.getChildren().add(biggroup);
+        monsterhand.setLayoutX(1000);
+        monsterhand.setLayoutY(500);
+        elements.getChildren().add(monsterhand);
         //
         ScrollPane pane = new ScrollPane(elements);
         pane.setPrefSize(Screen.getPrimary().getVisualBounds().getWidth(),Screen.getPrimary().getVisualBounds().getHeight());
@@ -100,7 +102,7 @@ public class BoardFX {
         Button wardbtn = new Button("Ward");
         wardbtn.setOnAction(e->{
             if (game.getPlayers().get(0).ward()){
-                int res = game.getPlayers().get(0).countSuccesses();
+                int res = game.getPlayers().get(0).getTEMP_true_successes();
                 messageline.setText("While testing your lore skills you've thrown "+String.valueOf(res)+" successes!");
                 for (int i =0;i<res;i++) {
                     destroyDoom(game.getPlayers().get(0).getSpace());
@@ -142,8 +144,9 @@ public class BoardFX {
         img.setLayoutY(y);
         img.setUserData(link);
         img.setOnMouseClicked(e->{
-            if (game.getPlayers().get(0).move((Node)img.getUserData())) {
-                renderPlayer(game.getPlayers().get(0), img);
+            Node destination = game.getPlayers().get(0).move((Node)img.getUserData());
+            if (destination!=null) {
+                renderPlayer(game.getPlayers().get(0), destination);
                 updateStats();
             }
         });
@@ -161,7 +164,7 @@ public class BoardFX {
         //
         Button top = createHoodNodeInteraction(img.getLayoutX()+100,img.getLayoutY()+100,hood.getNodes().get(0));
         Button mddl = createHoodNodeInteraction(img.getLayoutX()+25,img.getLayoutY()+200,hood.getNodes().get(1));
-        Button lower = createHoodNodeInteraction(img.getLayoutX()+200,img.getLayoutY()+200,hood.getNodes().get(1));
+        Button lower = createHoodNodeInteraction(img.getLayoutX()+200,img.getLayoutY()+200,hood.getNodes().get(2));
         createNodeStatbox(top,20,-60);
         createNodeStatbox(mddl,20,-60);
         createNodeStatbox(lower,20,-60);
@@ -190,12 +193,14 @@ public class BoardFX {
         hoodbox.setUserData(anchor);
         elements.getChildren().add(hoodbox);
         hoodboxes.put(anchor,hoodbox);
+
     }
     private Button createHoodNodeInteraction(double x, double y, Node node){
         Button btn = new Button(node.getName());
         btn.setOnAction(e->{
-            if (game.getPlayers().get(0).move((Node)btn.getUserData())) {
-                renderPlayer(game.getPlayers().get(0), btn);
+            Node destination = game.getPlayers().get(0).move((Node)btn.getUserData());
+            if (destination!=null) {
+                renderPlayer(game.getPlayers().get(0), destination);
                 updateStats();
             }
         });
@@ -207,12 +212,7 @@ public class BoardFX {
     private void initRender(){
         for (Investigator player:
              game.getPlayers()) {
-            for (javafx.scene.Node node:
-                 statusboxes.keySet()) {
-                if (player.getSpace()==node.getUserData()){
-                    renderPlayer(player,node);
-                }
-            }
+            renderPlayer(player,player.getSpace());
         }
         updateStats();
         for (Monster monster:
@@ -220,12 +220,13 @@ public class BoardFX {
             for (HBox node:
                     statusboxes.values()) {
                 if (monster.getSpace()==node.getUserData()){
+                    monster.getSpace().addMonster(monster);
                     renderMonster(monster, (Node)node.getUserData());
                 }
             }
         }
     }
-    private void renderPlayer(Investigator player, javafx.scene.Node anchor) {
+    private void renderPlayer(Investigator player, Node destination) {
         for (HBox node:
              statusboxes.values()){
             for (javafx.scene.Node img:
@@ -240,19 +241,16 @@ public class BoardFX {
         img.setFitHeight(60);
         img.setFitWidth(40);
         img.setUserData(player);
-        statusboxes.get(anchor).getChildren().add(img);
-    }
-    public void renderMonster(Monster monster, Node destination){
         for (HBox node:
-             statusboxes.values()) {
-            for (javafx.scene.Node image:
-                    node.getChildren()) {
-                if (image.getUserData() == monster){
-                    node.getChildren().remove(image);
-                    break;
-                }
+                statusboxes.values()){
+            if (node.getUserData()==destination){
+                node.getChildren().add(img);
+                break;
             }
         }
+    }
+    public void renderMonster(Monster monster, Node destination){
+        destroyMonster(monster);
         ImageView img = new ImageView(new Image(getClass().getResource("/images/monsters/"+monster.getName()+".jpg").toExternalForm()));
         img.setFitHeight(60);
         img.setFitWidth(40);
@@ -292,6 +290,41 @@ public class BoardFX {
             elements.getChildren().remove(elements.getChildren().size()-1);
             elements.getChildren().add(zoom);
         });
+    }
+    public void destroyMonster(Monster monster){
+        for (HBox node:
+                statusboxes.values()) {
+            for (javafx.scene.Node image:
+                    node.getChildren()) {
+                if (image.getUserData() == monster){
+                    node.getChildren().remove(image);
+                    break;
+                }
+            }
+        }
+    }
+    public void placeMonsterToHand(Monster monster){
+        destroyMonster(monster);
+        ImageView img = new ImageView(new Image(getClass().getResource("/images/monsters/"+monster.getName()+".jpg").toExternalForm()));
+        img.setFitHeight(240);
+        img.setFitWidth(160);
+        img.setUserData(monster);
+        monsterhand.getChildren().add(img);
+        img.setOnMouseExited(e->{
+            img.setImage(new Image(getClass().getResource("/images/monsters/"+monster.getName()+".jpg").toExternalForm()));
+        });
+        img.setOnMouseEntered(e->{
+            img.setImage(new Image(getClass().getResource("/images/monsters/"+monster.getName()+"_back.jpg").toExternalForm()));
+        });
+    }
+    public void removeMonsterFromHand(Monster monster){
+        for (javafx.scene.Node image:
+                monsterhand.getChildren()) {
+            if (image.getUserData() == monster){
+                monsterhand.getChildren().remove(image);
+                break;
+            }
+        }
     }
     public void renderDoom(Node space){
         ImageView img = new ImageView(new Image(getClass().getResource("/images/doom.png").toExternalForm()));
@@ -351,6 +384,20 @@ public class BoardFX {
                     StackPane.setMargin(img, new javafx.geometry.Insets(lastY + dymanicOffsetY, 0, 0, lastX + dynamicOffsetX));
                 }else {
                     StackPane.setMargin(img, new Insets(0, 0, 0, 0));
+                }
+            }
+        }
+    }
+    public void destroyClue(Neighborhood hood){
+        for (StackPane node:
+                hoodboxes.values()){
+            if (node.getUserData()==hood){
+                for (javafx.scene.Node image:
+                        node.getChildren()) {
+                    if (image.getUserData() == "clue"){
+                        node.getChildren().remove(image);
+                        break;
+                    }
                 }
             }
         }
