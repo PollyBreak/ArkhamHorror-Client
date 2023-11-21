@@ -398,7 +398,10 @@ public class Investigator {
     public void hit(Monster monster) {
         game.setCurrent_action(Actions.ATTACK_ACTION);
         actionResult = new AttackResult(this, null, monster);
+        actionResult.act();
         test(strength);
+        doAction(Actions.ATTACK_ACTION);
+        checkIfMonster();
     }
 
     ////////////////////////////GETTERS AND SETTERS//////////
