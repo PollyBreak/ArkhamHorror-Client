@@ -98,12 +98,9 @@ public class Game implements Publisher {
             win.show();
         }
     }
-
     public void finish() {
 
     }
-
-
     public ArrayList<Investigator> getPlayers() {
         return players;
     }

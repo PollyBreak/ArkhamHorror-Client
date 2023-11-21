@@ -367,7 +367,7 @@ public class BoardFX {
     public void renderClue(Neighborhood hood){
         int dynamicOffsetX = 15;
         int dymanicOffsetY = -10;
-        ImageView img = new ImageView(new Image(getClass().getResource("/images/doom.png").toExternalForm()));
+        ImageView img = new ImageView(new Image(getClass().getResource("/images/clue.png").toExternalForm()));
         img.setFitHeight(35);
         img.setFitWidth(35);
         img.setRotate(Math.random()*180);
@@ -406,7 +406,7 @@ public class BoardFX {
         }
     }
     public void renderAnomaly(Neighborhood hood){
-        ImageView img = new ImageView(new Image(getClass().getResource("/images/doom.png").toExternalForm()));
+        ImageView img = new ImageView(new Image(getClass().getResource("/images/anomaly.png").toExternalForm()));
         img.setFitHeight(120);
         img.setFitWidth(120);
         img.setRotate(Math.random()*180);

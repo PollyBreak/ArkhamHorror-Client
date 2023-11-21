@@ -247,44 +247,6 @@ public class Investigator {
                 alert.show();
                 return null;
             }
-//            if (found) {
-//                Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Do you want to spend "+String.valueOf(distance-3)+"$ to move? (You have "+String.valueOf(money)+")",ButtonType.OK,ButtonType.NO);
-//                AtomicBoolean respond = new AtomicBoolean(true);
-//                if (distance>3) {
-//                    int finalDistance = distance;
-//                    alert.showAndWait().ifPresent(response -> {
-//                        if (response.equals(ButtonType.OK)) {
-//                            if (money>=finalDistance-3) {
-//                                money-=finalDistance-3;
-//                                space.removePlayer(this);
-//                                space = destination;
-//                                destination.addPlayer(this);
-//                                checkIfMonster();
-//                                respond.set(true);
-//                                doAction(Actions.MOVE_ACTION);
-//                            } else {
-//                                Alert alert_reject = new Alert(Alert.AlertType.ERROR,"You do not have enough cash.", ButtonType.CLOSE);
-//                                alert_reject.show();
-//                                respond.set(false);
-//                            }
-//                        } else {
-//                            respond.set(false);
-//                        }
-//                    });
-//                } else {
-//                    space.removePlayer(this);
-//                    space = destination;
-//                    checkIfMonster();
-//                    destination.addPlayer(this);
-//                    doAction(Actions.MOVE_ACTION);
-//                }
-//                return respond.get();
-//            } else {
-//                Alert alert = new Alert(Alert.AlertType.ERROR,"The destination is too far.", ButtonType.CLOSE);
-//                alert.show();
-//                return false;
-//            }
-//        }
         }
     }
 
