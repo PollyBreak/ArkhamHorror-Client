@@ -1,5 +1,8 @@
 package kz.stargazer.arkhamhorror_client.Facade;
 
+import kz.stargazer.arkhamhorror_client.Assets.AssetCard;
+import kz.stargazer.arkhamhorror_client.Assets.Item;
+import kz.stargazer.arkhamhorror_client.Assets.actionStrategies.ShotgunStrategy;
 import kz.stargazer.arkhamhorror_client.Heroes.Investigator;
 import kz.stargazer.arkhamhorror_client.Heroes.InvestigatorBuilder;
 import kz.stargazer.arkhamhorror_client.Heroes.monsters.Monster;
@@ -29,6 +32,11 @@ public class GameFacadeIAzatoth implements GameFacadeInterface{
         Investigator mainHero = new InvestigatorBuilder().name("Daniela Reyes").game(game).health(7)
                 .sanity(5).skills(3,3,1,3, 3).focusLimit(3)
                 .money(3).startSpace(game.getBoard().fetchNode("Arkham Advertiser")).build();
+
+            //initial assets
+            Item shortgun = new Item(new ShotgunStrategy(3));
+            mainHero.getAssets().getItems().add(shortgun);
+
         game.getPlayers().add(mainHero);
         game.getBoard().placePlayer(mainHero.getSpace().getName(),mainHero);
 

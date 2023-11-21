@@ -1,5 +1,6 @@
 package kz.stargazer.arkhamhorror_client.Assets;
 
+import kz.stargazer.arkhamhorror_client.Assets.actionStrategies.ShotgunStrategy;
 import kz.stargazer.arkhamhorror_client.Heroes.Investigator;
 
 import java.util.ArrayList;
@@ -24,4 +25,7 @@ public class Item extends AssetCard{
         }
     }
 
+    public Item(Action actionStrategy) {
+        super(actionStrategy);
+    }
 }

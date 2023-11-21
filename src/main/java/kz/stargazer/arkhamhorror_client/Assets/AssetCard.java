@@ -12,4 +12,15 @@ public class AssetCard implements Action{
         actionStrategy.use(investigator);
     }
 
+    public Action getActionStrategy() {
+        return actionStrategy;
+    }
+
+    public void setActionStrategy(Action actionStrategy) {
+        this.actionStrategy = actionStrategy;
+    }
+
+    public AssetCard(Action actionStrategy) {
+        this.actionStrategy = actionStrategy;
+    }
 }

@@ -12,4 +12,8 @@ public class Ally extends AssetCard {
 //        actionStrategy.use(investigator);
 //    }
 
+
+    public Ally(Action actionStrategy) {
+        super(actionStrategy);
+    }
 }

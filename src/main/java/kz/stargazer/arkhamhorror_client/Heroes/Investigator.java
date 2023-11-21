@@ -74,6 +74,7 @@ public class Investigator {
         this.assets=investigatorBuilder.getAssets();
         this.talent=investigatorBuilder.getTalent();
         this.money=investigatorBuilder.getMoney();
+        assets = new Assets();
         delayed = false;
         withMonsters = false;
         ready = false;
@@ -125,7 +126,6 @@ public class Investigator {
 
 
     public ArrayList<Integer> test(int skill){
-        lastTest.clear();
         ArrayList<Integer> dices = new ArrayList<>();
         for (int i=0; i<skill; i++){
             int dice = (int)(Math.random() * 6) + 1;
@@ -310,6 +310,7 @@ public class Investigator {
             }
             //
             doAction(Actions.WARD_ACTION);
+            lastTest.clear();
             return true;
         }
     }
@@ -360,10 +361,14 @@ public class Investigator {
     public void hit(Monster monster) {
         game.setCurrent_action(Actions.ATTACK_ACTION);
         actionResult = new AttackResult(this, null, monster);
-        actionResult.act();
         test(strength);
+        if (!assets.getItems().isEmpty()){
+            assets.getItems().get(0).use(this);
+        }
+        actionResult.act();
         doAction(Actions.ATTACK_ACTION);
         checkIfMonster();
+        lastTest.clear();
     }
 
     ////////////////////////////GETTERS AND SETTERS//////////
@@ -456,5 +461,13 @@ public class Investigator {
 
     public void setGluedMonsters(ArrayList<Monster> gluedMonsters) {
         this.gluedMonsters = gluedMonsters;
+    }
+
+    public Assets getAssets() {
+        return assets;
+    }
+
+    public void setAssets(Assets assets) {
+        this.assets = assets;
     }
 }

@@ -10,4 +10,7 @@ public class Spell extends AssetCard{
     private ArrayList<Integer> traits;
     private int sanityDecrease;
 
+    public Spell(Action actionStrategy) {
+        super(actionStrategy);
+    }
 }

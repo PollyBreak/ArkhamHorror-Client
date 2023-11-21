@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 public class ShotgunStrategy implements Action {
     private int damage;
+
     @Override
     public void use(Investigator investigator) {
         investigator.test(damage);
@@ -20,4 +21,9 @@ public class ShotgunStrategy implements Action {
             investigator.getLastTest().add(6);
         }
     }
+
+    public ShotgunStrategy(int damage) {
+        this.damage = damage;
+    }
+    
 }
