@@ -315,6 +315,9 @@ public class BoardFX {
         });
         img.setOnMouseEntered(e->{
             img.setImage(new Image(getClass().getResource("/images/monsters/"+monster.getName()+"_back.jpg").toExternalForm()));
+            img.setOnMouseClicked(ex->{
+                game.getPlayers().get(0).hit((Monster)img.getUserData());
+            });
         });
     }
     public void removeMonsterFromHand(Monster monster){
