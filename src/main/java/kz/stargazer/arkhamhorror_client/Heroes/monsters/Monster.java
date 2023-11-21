@@ -173,4 +173,8 @@ public abstract class Monster implements Subscriber {
     public int getHealth() {
         return health;
     }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
 }
