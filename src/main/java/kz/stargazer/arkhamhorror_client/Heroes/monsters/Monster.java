@@ -74,8 +74,18 @@ public abstract class Monster implements Subscriber {
         List<Node> path = findPathWithinDistance(space, targetNode, 2);
         if (path != null && !path.isEmpty()) {
             space.removeMonster(this);
+            // пройтись по пути и проверить на каждом шагу есть ли там игрок, где есть, там остановиться и приклеиться
+            for (Node p: path) {
+                //space
+                if (!p.getHeroes().isEmpty()) {
+                    engaged = true;
+                    goal = p.getHeroes().get(0);
+                    //добавить сюда монстра
+                }
+            }
             space = path.get(Math.min(2, path.size() - 1));
             path.get(Math.min(2, path.size() - 1)).addMonster(this);
+                    // ПРИКЛЕИВАНИЕ  К ИГРОКУ!
             game.getFX().renderMonster(this,this.space);
         } else {
             System.out.println("No valid path within 2 nodes to the target.");
@@ -145,5 +155,13 @@ public abstract class Monster implements Subscriber {
     }
     public String getName() {
         return name;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
     }
 }

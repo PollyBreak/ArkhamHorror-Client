@@ -9,6 +9,7 @@ import kz.stargazer.arkhamhorror_client.Heroes.monsters.Monster;
 import kz.stargazer.arkhamhorror_client.Mechanics.StatePattern.ActionResult;
 import kz.stargazer.arkhamhorror_client.Mechanics.Game;
 import kz.stargazer.arkhamhorror_client.Mechanics.Phases;
+import kz.stargazer.arkhamhorror_client.Mechanics.StatePattern.AttackResult;
 import kz.stargazer.arkhamhorror_client.Mechanics.StatePattern.EvadeResult;
 import kz.stargazer.arkhamhorror_client.Mechanics.StatePattern.WardResult;
 import kz.stargazer.arkhamhorror_client.brd.Node;
@@ -138,6 +139,7 @@ public class Investigator {
         }
     }
 
+
     public boolean move(Node destination) {
 //        if (doneActions.contains(Actions.MOVE_ACTION)) {
 //            return false;
@@ -173,6 +175,8 @@ public class Investigator {
                     break;
                 }
             }
+
+
             if (found) {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Do you want to spend "+String.valueOf(distance-3)+"$ to move? (You have "+String.valueOf(money)+")",ButtonType.OK,ButtonType.NO);
                 AtomicBoolean respond = new AtomicBoolean(true);
@@ -188,6 +192,7 @@ public class Investigator {
                                 checkIfMonster();
                                 respond.set(true);
                                 doAction(Actions.MOVE_ACTION);
+                                        ///ПРИКЛЕИВАНИЕ МОНСТРА
                             } else {
                                 Alert alert_reject = new Alert(Alert.AlertType.ERROR,"You do not have enough cash.", ButtonType.CLOSE);
                                 alert_reject.show();
@@ -203,6 +208,7 @@ public class Investigator {
                     checkIfMonster();
                     destination.addPlayer(this);
                     doAction(Actions.MOVE_ACTION);
+                            ///ПРИКЛЕИВАНИЕ МОНСТРА
                 }
                 return respond.get();
             } else {
@@ -284,7 +290,9 @@ public class Investigator {
     }
 
     public void hit(Monster monster) {
-
+        game.setCurrent_action(Actions.ATTACK_ACTION);
+        actionResult = new AttackResult(this, null, monster);
+        test(strength);
     }
 
     ////////////////////////////GETTERS AND SETTERS//////////
@@ -357,5 +365,13 @@ public class Investigator {
     }
     public int getMoney() {
         return money;
+    }
+
+    public ArrayList<Monster> getGluedMonsters() {
+        return gluedMonsters;
+    }
+
+    public void setGluedMonsters(ArrayList<Monster> gluedMonsters) {
+        this.gluedMonsters = gluedMonsters;
     }
 }
